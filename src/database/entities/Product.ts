@@ -16,6 +16,9 @@ export class Product {
     @Column({ type: "decimal", precision: 10, scale: 2, nullable: false })
     price!: number; // Nome em inglês
 
+    @Column({ type: "boolean", default: true, nullable: false })
+    is_active!: boolean; // Nome em inglês
+
     @Column({ type: "varchar", length: 255, nullable: true })
     barcode!: string | null; // Nome em inglês
 

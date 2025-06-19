@@ -16,7 +16,7 @@ export class Client {
     phone!: string | null; // Nome em inglês
 
     @Column({ type: "boolean", default: true, nullable: false })
-    active!: boolean; // Nome em inglês
+    is_active!: boolean; // Nome em inglês
 
     @CreateDateColumn()
     created_at!: Date; // Nome em inglês
