@@ -2,13 +2,15 @@
   "compilerOptions": {
     "target": "es2018",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
     "module": "commonjs",                                /* Specify what module code is generated. */
-    "rootDirs": ["./","./src"],                                  /* Specify the root folder within your source files. */
+    "rootDirs": ["./","./src"],                          /* Specify the root folder within your source files. */
     "outDir": "./dist",                                  /* Specify an output folder for all emitted files. */
     "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
     "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
     "strict": true,                                      /* Enable all strict type-checking options. */
     "noImplicitAny": true,                               /* Enable error reporting for expressions and declarations with an implied 'any' type. */
-    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true,                                /* Skip type checking all .d.ts files. */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [ // <-- Adicione este array aqui
     "src/**/*.ts",
@@ -16,7 +18,6 @@
     "./*.ts",
   ],
   "exclude": [ // <-- Adicione este array aqui
-    "node_modules",
-    "dist"
+    "node_modules"
   ]
 }

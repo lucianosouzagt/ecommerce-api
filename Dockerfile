@@ -20,4 +20,6 @@ RUN npm run build
 EXPOSE 3000
 
 # Comando para iniciar a aplicação (roda o código compilado)
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/src/server.js"]
+
+

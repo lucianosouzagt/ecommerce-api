@@ -4,7 +4,14 @@
   "description": "Projeto final para pos de arquitetura de software",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:generate": "npm run typeorm migration:generate src/database/migrations/ --dataSource src/database/index.ts",
+    "migration:run": "npm run typeorm migration:run --dataSource src/database/index.ts",
+    "migration:revert": "npm run typeorm migration:revert --dataSource src/database/index.ts",
+    "build": "tsc",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -23,6 +30,7 @@
     "dotenv-expand": "^12.0.2",
     "express": "^5.1.0",
     "pg": "^8.16.1",
+    "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.24"
   },
   "devDependencies": {
