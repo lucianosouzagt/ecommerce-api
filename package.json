@@ -20,17 +20,25 @@
   "homepage": "https://github.com/lucianosouzagt/ecommerce-api#readme",
   "dependencies": {
     "dotenv": "^16.5.0",
+    "dotenv-expand": "^12.0.2",
     "express": "^5.1.0",
     "pg": "^8.16.1",
     "typeorm": "^0.3.24"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.3",
     "@types/supertest": "^6.0.3",
+    "commitizen": "^4.3.1",
+    "eslint": "^9.29.0",
+    "husky": "^9.1.7",
     "jest": "^30.0.2",
+    "prettier": "^3.5.3",
     "supertest": "^7.1.1",
+    "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }
