@@ -1,41 +1,62 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm"
-import { OrderItem } from "./OrderItem"; // Importa a entidade OrderItem
-import { StockMovement } from "./StockMovement"; // Importa a entidade StockMovement
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne,JoinColumn, OneToMany } from "typeorm"
+import { IsUUID, IsString, IsNumber, IsPositive, IsBoolean, IsOptional, MinLength, MaxLength, IsDate } from 'class-validator'; // <--- Importe os decoradores
 
-@Entity("products") // Nome da tabela em inglês
+import { User } from './User';
+import { OrderItem } from './OrderItem';
+import { StockMovement } from './StockMovement';
+
+@Entity('products') // Confirme o nome da tabela
 export class Product {
-    @PrimaryGeneratedColumn("uuid")
-    id!: string; // UUID primary key
+    @PrimaryGeneratedColumn('uuid')
+    @IsUUID() // <--- Decorador para validar que é um UUID
+    id!: string; // Use o operador '!' pois o TypeORM gerencia a inicialização
 
-    @Column({ type: "varchar", length: 255, nullable: false })
-    name!: string; // Nome em inglês
+    @Column({ type: 'varchar', length: 255, unique: true })
+    @IsString()
+    @MinLength(3)
+    @MaxLength(255)
+    name!: string;
 
-    @Column({ type: "text", nullable: true })
-    description!: string | null; // Nome em inglês
+    @Column({ type: 'text', nullable: true })
+    @IsOptional() // Permite que este campo seja opcional na validação
+    @IsString()
+    description: string | null = null; // Inicialize com null se nullable é true
 
-    @Column({ type: "decimal", precision: 10, scale: 2, nullable: false })
-    price!: number; // Nome em inglês
+    @Column({ type: 'decimal', precision: 10, scale: 2 })
+    @IsNumber()
+    @IsPositive() // Garante que o preço é positivo
+    price!: number;
 
-    @Column({ type: "boolean", default: true, nullable: false })
-    is_active!: boolean; // Nome em inglês
+    @Column({ type: 'int', default: 0 }) // Considerar um campo para estoque atual?
+    @IsNumber()
+    @IsPositive({ message: 'Stock must be a non-negative number' }) // Estoque não pode ser negativo
+    stock!: number; // Se o default for 0 e não for nullable, pode usar '!'
 
-    @Column({ type: "varchar", length: 255, nullable: true })
-    barcode!: string | null; // Nome em inglês
+    @Column({ type: 'int', default: 0 }) // Considerar um campo para estoque minimo?
+    @IsNumber()
+    @IsPositive({ message: 'Stock must be a non-negative number' }) // Estoque minimo não pode ser negativo
+    stock_min!: number; // Se o default for 0 e não for nullable, pode usar '!'
 
-    @CreateDateColumn()
-    created_at!: Date; // Nome em inglês
+    @Column({ type: 'boolean', default: true })
+    @IsBoolean()
+    is_active!: boolean;
+    
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @IsDate() // Decorador para validar que é uma data
+    created_at!: Date; // Definido pelo banco/TypeORM, use '!'
 
-    @UpdateDateColumn()
-    updated_at!: Date; // Nome em inglês
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    @IsDate() // Decorador para validar que é uma data
+    updated_at!: Date; // Definido pelo banco/TypeORM, use '!'
 
-    @Column({ type: "uuid", nullable: true })
-    updated_by!: string | null; // Nome em inglês
+    @Column({ type: 'uuid', nullable: true })
+    @IsOptional()
+    @IsUUID()
+    updated_by: string | null = null; // ID do usuário que criou (se aplicável)
 
-    // Relacionamento: Um produto pode estar em muitos itens de pedido (order_items)
-    @OneToMany(() => OrderItem, item => item.product)
-    orderItems!: OrderItem[]; // Nome da propriedade em inglês
+    @OneToMany(() => OrderItem, orderItem => orderItem.product)
+    orderItems!: OrderItem[]; // ! indica que o ORM vai inicializar, não precisa ser 'string | null'
 
-    // Relacionamento: Um produto pode ter muitas movimentações de estoque (stock_movements)
-    @OneToMany(() => StockMovement, movement => movement.product)
-    stockMovements!: StockMovement[]; // Nome da propriedade em inglês
+    @OneToMany(() => StockMovement, stockMovement => stockMovement.product)
+    stockMovements!: StockMovement[]; // ! indica que o ORM vai inicializar
 }

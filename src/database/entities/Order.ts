@@ -1,36 +1,52 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, JoinColumn } from "typeorm";
-import { Client } from "./Client"; // Importa a entidade Client
-import { OrderItem } from "./OrderItem"; // Importa a entidade OrderItem
+// src/database/entities/Order.ts
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { IsUUID, IsString, IsNumber, IsPositive, IsDate, MinLength, MaxLength } from 'class-validator'; // <-- Adicione os decoradores
 
-@Entity("orders") // Nome da tabela em inglês
+import { Client } from './Client';
+import { OrderItem } from './OrderItem';
+import { User } from './User';
+
+@Entity('orders')
 export class Order {
-    @PrimaryGeneratedColumn("uuid")
-    id!: string; // UUID primary key
+    @PrimaryGeneratedColumn('uuid')
+    @IsUUID()
+    id!: string;
 
-    // Chave estrangeira para Client
+    @Column({ type: 'uuid' })
+    @IsUUID()
+    client_id!: string; // Validar o FK diretamente
+
     @ManyToOne(() => Client, client => client.orders)
-    @JoinColumn({ name: "client_id" }) // Opcional: especifica o nome da coluna FK no BD
-    client!: Client; // Nome da propriedade em inglês
+    @JoinColumn({ name: 'client_id' })
+    client!: Client; // Relação
 
-    @Column({ type: "uuid", nullable: false }) // Coluna explícita para FK
-    client_id!: string;
+    @Column({ type: 'timestamp' }) // Data do pedido (quando foi feito)
+    @IsDate()
+    orderDate!: Date;
 
-    @Column({ type: "decimal", precision: 10, scale: 2, nullable: false })
-    total!: number;
+    @Column({ type: 'varchar', length: 50 }) // Ex: 'Pending', 'Processing', 'Completed', 'Cancelled'
+    @IsString()
+    @MinLength(3)
+    @MaxLength(50)
+    status!: string; // Poderia usar @IsIn(['Pending', 'Processing', ...]) se usar um enum/lista fixa
 
-    @Column({ type: "varchar", length: 50, nullable: false })
-    status!: string; // Ex: 'pending', 'processing', 'shipped', 'delivered', 'cancelled'
+    @Column({ type: 'decimal', precision: 10, scale: 2 })
+    @IsNumber()
+    @IsPositive()
+    totalAmount!: number; // Validar que o total é positivo
 
-    @CreateDateColumn()
-    created_at!: Date; // Nome em inglês
+    @OneToMany(() => OrderItem, orderItem => orderItem.order)
+    items!: OrderItem[]; // Relação
 
-    @UpdateDateColumn()
-    updated_at!: Date; // Nome em inglês
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @IsDate()
+    created_at!: Date;
 
-    @Column({ type: "uuid", nullable: true })
-    updated_by!: string | null; // Nome em inglês
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    @IsDate()
+    updated_at!: Date;
 
-    // Relacionamento: Um pedido (order) pode ter muitos itens de pedido (order_items)
-    @OneToMany(() => OrderItem, item => item.order)
-    items!: OrderItem[]; // Nome da propriedade em inglês (poderia ser orderItems também)
+    @ManyToOne(() => User, { nullable: true }) // Relacionamento com User (atualizador)
+    @JoinColumn({ name: 'updated_by' })
+    updated_by!: User | null; // Pode ser null se updated_by_id for null
 }

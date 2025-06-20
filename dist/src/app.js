@@ -14,6 +14,9 @@ app.use(express_1.default.json());
 app.use('/v1/produto', produto_routes_1.default);
 // app.use('/v1/cliente', clientRoutes);
 // ...
+app.get('/', (req, res) => {
+    res.send('API de Produtos rodando!');
+});
 // Middleware de tratamento de erros global (DEVE ser o último middleware)
 app.use((err, req, res, next) => {
     console.error(err); // Log o erro no console do servidor
