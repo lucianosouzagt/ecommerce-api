@@ -1,40 +1,57 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
-import { Order } from "./Order"; // Importa a entidade Order
-import { Product } from "./Product"; // Importa a entidade Product
+// src/database/entities/OrderItem.ts
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { IsUUID, IsNumber, IsPositive, Min, IsDate } from 'class-validator'; // <-- Adicione os decoradores
 
-@Entity("order_items") // Nome da tabela em inglês
+import { Order } from './Order';
+import { Product } from './Product';
+import { User } from './User';
+import { StockMovement } from './StockMovement';
+
+@Entity('order_items')
 export class OrderItem {
-    @PrimaryGeneratedColumn("uuid")
-    id!: string; // UUID primary key
+    @PrimaryGeneratedColumn('uuid')
+    @IsUUID()
+    id!: string;
 
-    // Chave estrangeira para Order
+    @Column({ type: 'uuid' })
+    @IsUUID()
+    order_id!: string; // Validar FK
+
+    @Column({ type: 'uuid' })
+    @IsUUID()
+    product_id!: string; // Validar FK
+
+    @Column({ type: 'int' })
+    @IsNumber()
+    @IsPositive()
+    @Min(1) // Quantidade mínima de 1 item
+    quantity!: number;
+
+    @Column({ type: 'decimal', precision: 10, scale: 2 })
+    @IsNumber()
+    @IsPositive() // Preço unitário deve ser positivo
+    unitPrice!: number;
+
     @ManyToOne(() => Order, order => order.items)
-    @JoinColumn({ name: "order_id" }) // Opcional: especifica o nome da coluna FK no BD
-    order!: Order; // Nome da propriedade em inglês
+    @JoinColumn({ name: 'order_id' })
+    order!: Order; // Relação
 
-    @Column({ type: "uuid", nullable: false }) // Coluna explícita para FK
-    order_id!: string;
-
-    // Chave estrangeira para Product
     @ManyToOne(() => Product, product => product.orderItems)
-    @JoinColumn({ name: "product_id" }) // Opcional: especifica o nome da coluna FK no BD
-    product!: Product; // Nome da propriedade em inglês
+    @JoinColumn({ name: 'product_id' })
+    product!: Product; // Relação
 
-    @Column({ type: "uuid", nullable: false }) // Coluna explícita para FK
-    product_id!: string;
+     @OneToMany(() => StockMovement, stockMovement => stockMovement.orderItem)
+    stockMovements!: StockMovement[];
 
-    @Column({ type: "int", nullable: false })
-    quantity!: number; // Nome em inglês
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @IsDate()
+    created_at!: Date;
 
-    @Column({ type: "decimal", precision: 10, scale: 2, nullable: false })
-    price!: number; // Nome em inglês (preço unitário no momento da compra)
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    @IsDate()
+    updated_at!: Date;
 
-    @CreateDateColumn()
-    created_at!: Date; // Nome em inglês
-
-    @UpdateDateColumn()
-    updated_at!: Date; // Nome em inglês
-
-    @Column({ type: "uuid", nullable: true })
-    updated_by!: string | null; // Nome em inglês
+    @ManyToOne(() => User, { nullable: true }) // Relacionamento com User (atualizador)
+    @JoinColumn({ name: 'updated_by' })
+    updated_by!: User | null; // Pode ser null se updated_by_id for null
 }

@@ -1,34 +1,54 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
-import { Product } from "./Product"; // Importa a entidade Product
+// src/database/entities/StockMovement.ts
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { IsUUID, IsDate, IsString, IsNumber, Min, IsIn } from 'class-validator'; // <-- Adicione os decoradores
 
-@Entity("stock_movements") // Nome da tabela em inglês
+import { Product } from './Product';
+import { User } from './User';
+import { OrderItem } from './OrderItem'; 
+// Se preferir usar um Enum para os tipos de movimento, defina-o aqui
+// export enum MovementType { In = 'in', Out = 'out' }
+
+@Entity('stock_movements')
 export class StockMovement {
-    @PrimaryGeneratedColumn("uuid")
-    id!: string; // UUID primary key
+    @PrimaryGeneratedColumn('uuid')
+    @IsUUID()
+    id!: string;
 
-    // Chave estrangeira para Product
+    @Column({ type: 'uuid' })
+    @IsUUID()
+    product_id!: string; // Validar FK
+
     @ManyToOne(() => Product, product => product.stockMovements)
-    @JoinColumn({ name: "product_id" }) // Opcional: especifica o nome da coluna FK no BD
-    product!: Product; // Nome da propriedade em inglês
+    @JoinColumn({ name: 'product_id' })
+    product!: Product; // Relação
 
-    @Column({ type: "uuid", nullable: false }) // Coluna explícita para FK
-    product_id!: string;
+    @ManyToOne(() => OrderItem, orderItem => orderItem.stockMovements, { nullable: true, onDelete: 'SET NULL' })
+    @JoinColumn({ name: 'orderItem_id' })
+    orderItem!: OrderItem;
 
-    @Column({ type: "varchar", length: 50, nullable: false })
-    type!: string; // Nome em inglês (ex: 'entry', 'exit')
+    @Column({ type: 'timestamp' }) // Data do movimento
+    @IsDate()
+    movementDate!: Date;
 
-    @Column({ type: "int", nullable: false })
-    quantity!: number; // Nome em inglês (quantidade movimentada)
+    @Column({ type: 'varchar', length: 10 }) // 'in' ou 'out'
+    @IsString()
+    @IsIn(['in', 'out']) // <-- Validar que o valor está na lista permitida
+    type!: string; // Poderia ser MovementType se usasse Enum
 
-    @Column({ type: "text", nullable: true })
-    reason!: string | null; // Nome em inglês (motivo da movimentação)
+    @Column({ type: 'int' })
+    @IsNumber()
+    @Min(1) // Quantidade mínima de 1 no movimento
+    quantity!: number;
 
-    @CreateDateColumn()
-    created_at!: Date; // Nome em inglês
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @IsDate()
+    created_at!: Date;
 
-    @UpdateDateColumn()
-    updated_at!: Date; // Nome em inglês
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    @IsDate()
+    updated_at!: Date;
 
-    @Column({ type: "uuid", nullable: true })
-    updated_by!: string | null; // Nome em inglês
+    @ManyToOne(() => User, { nullable: true }) // Relacionamento com User (atualizador)
+    @JoinColumn({ name: 'updated_by' })
+    updated_by!: User | null; // Pode ser null se updated_by_id for null
 }

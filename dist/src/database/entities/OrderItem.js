@@ -10,58 +10,71 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderItem = void 0;
+// src/database/entities/OrderItem.ts
 const typeorm_1 = require("typeorm");
-const Order_1 = require("./Order"); // Importa a entidade Order
-const Product_1 = require("./Product"); // Importa a entidade Product
+const class_validator_1 = require("class-validator"); // <-- Adicione os decoradores
+const Order_1 = require("./Order");
+const Product_1 = require("./Product");
+const User_1 = require("./User");
 let OrderItem = class OrderItem {
 };
 exports.OrderItem = OrderItem;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
+    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
+    (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
 ], OrderItem.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Order_1.Order, order => order.items),
-    (0, typeorm_1.JoinColumn)({ name: "order_id" }) // Opcional: especifica o nome da coluna FK no BD
-    ,
-    __metadata("design:type", Order_1.Order)
-], OrderItem.prototype, "order", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: "uuid", nullable: false }) // Coluna explícita para FK
-    ,
+    (0, typeorm_1.Column)({ type: 'uuid' }),
+    (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
 ], OrderItem.prototype, "order_id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Product_1.Product, product => product.orderItems),
-    (0, typeorm_1.JoinColumn)({ name: "product_id" }) // Opcional: especifica o nome da coluna FK no BD
-    ,
-    __metadata("design:type", Product_1.Product)
-], OrderItem.prototype, "product", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: "uuid", nullable: false }) // Coluna explícita para FK
-    ,
+    (0, typeorm_1.Column)({ type: 'uuid' }),
+    (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
 ], OrderItem.prototype, "product_id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "int", nullable: false }),
+    (0, typeorm_1.Column)({ type: 'int' }),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsPositive)(),
+    (0, class_validator_1.Min)(1) // Quantidade mínima de 1 item
+    ,
     __metadata("design:type", Number)
 ], OrderItem.prototype, "quantity", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "decimal", precision: 10, scale: 2, nullable: false }),
+    (0, typeorm_1.Column)({ type: 'decimal', precision: 10, scale: 2 }),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsPositive)() // Preço unitário deve ser positivo
+    ,
     __metadata("design:type", Number)
-], OrderItem.prototype, "price", void 0);
+], OrderItem.prototype, "unitPrice", void 0);
 __decorate([
-    (0, typeorm_1.CreateDateColumn)(),
+    (0, typeorm_1.ManyToOne)(() => Order_1.Order, order => order.items),
+    (0, typeorm_1.JoinColumn)({ name: 'order_id' }),
+    __metadata("design:type", Order_1.Order)
+], OrderItem.prototype, "order", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => Product_1.Product, product => product.orderItems),
+    (0, typeorm_1.JoinColumn)({ name: 'product_id' }),
+    __metadata("design:type", Product_1.Product)
+], OrderItem.prototype, "product", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
+    (0, class_validator_1.IsDate)(),
     __metadata("design:type", Date)
 ], OrderItem.prototype, "created_at", void 0);
 __decorate([
-    (0, typeorm_1.UpdateDateColumn)(),
+    (0, typeorm_1.Column)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' }),
+    (0, class_validator_1.IsDate)(),
     __metadata("design:type", Date)
 ], OrderItem.prototype, "updated_at", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "uuid", nullable: true }),
+    (0, typeorm_1.ManyToOne)(() => User_1.User, { nullable: true }) // Relacionamento com User (atualizador)
+    ,
+    (0, typeorm_1.JoinColumn)({ name: 'updated_by' }),
     __metadata("design:type", Object)
 ], OrderItem.prototype, "updated_by", void 0);
 exports.OrderItem = OrderItem = __decorate([
-    (0, typeorm_1.Entity)("order_items") // Nome da tabela em inglês
+    (0, typeorm_1.Entity)('order_items')
 ], OrderItem);

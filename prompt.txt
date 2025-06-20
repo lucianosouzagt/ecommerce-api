@@ -1,0 +1,19 @@
+Olá! Sou Luciano Souza, Arquiteto de Sistemas especializado em Cyber Security.
+
+Estou trabalhando em um projeto de API de e-commerce utilizando Node.js, TypeScript, Express, TypeORM, PostgreSQL e Docker.
+
+Já completamos os seguintes passos:
+1.  Configuração inicial e estrutura do projeto.
+2.  Dockerização do ambiente (serviço de banco de dados PostgreSQL e serviço da aplicação Node.js).
+3.  Definição das entidades (Client, Order, OrderItem, Product, StockMovement, User) com UUIDs como chaves primárias.
+4.  Configuração do TypeORM e criação das migrations iniciais para o banco de dados.
+5.  Adição dos pacotes `class-validator` e `class-transformer` e inclusão dos decoradores de validação nas propriedades das entidades.
+6.  Implementação da camada básica de repositórios TypeORM para cada entidade, exportando as instâncias padrão.
+
+No momento, estou na branch `feature/service-layer`.
+
+O próximo passo que havíamos planejado é **implementar a lógica de negócio na Camada de Serviços**. Começamos a discutir o `ProductService` e a forma de usar `class-validator` nele.
+
+Gostaria de continuar desenvolvendo os services para as entidades restantes (Client, Order, OrderItem, StockMovement, User), implementando os métodos básicos (CRUD) e a lógica de negócio inicial para cada um, sempre buscando exemplos claros e diretos, como convém a um arquiteto de sistemas.
+
+Podemos retomar a partir daqui, focando na implementação dos serviços?

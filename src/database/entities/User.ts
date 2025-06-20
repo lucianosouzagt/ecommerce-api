@@ -1,33 +1,75 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+// src/database/entities/User.ts
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { IsUUID, IsString, IsEmail, MinLength, MaxLength, IsBoolean, IsDate, IsIn } from 'class-validator'; // <-- Adicione os decoradores
 
-@Entity("users")
+import { Product } from './Product'; // Assumindo que Product tem createdBy/updatedBy
+import { Client } from './Client';
+import { Order } from './Order';
+import { OrderItem } from './OrderItem';
+import { StockMovement } from './StockMovement';
+
+// Se preferir usar um Enum para os roles, defina-o aqui
+// export enum UserRole { Admin = 'admin', User = 'user' }
+
+@Entity('users')
 export class User {
-    @PrimaryGeneratedColumn("uuid")
-    id!: string; // Asserção de atribuição definitiva
+    @PrimaryGeneratedColumn('uuid')
+    @IsUUID()
+    id!: string;
 
-    @Column({ type: "varchar", length: 255, nullable: false })
-    name!: string; // Asserção (ou inicializar na criação)
+    @Column({ type: 'varchar', length: 255, unique: true })
+    @IsString()
+    @MinLength(3)
+    @MaxLength(255)
+    name!: string;
 
-    @Column({ type: "varchar", length: 255, unique: true, nullable: false })
-    email!: string; // Asserção (ou inicializar na criação)
+    @Column({ type: 'varchar', length: 255, unique: true })
+    @IsString()
+    @IsEmail()
+    email!: string;
 
-    @Column({ type: "timestamp", nullable: true })
-    email_verified_at: Date | null = null; // Inicializado com null
+    @Column({ type: 'varchar', length: 255 }) // Senhas devem ser armazenadas hasheadas!
+    @IsString()
+    @MinLength(8) // <-- Exemplo: senha com no mínimo 8 caracteres
+    password!: string;
 
-    @Column({ type: "varchar", length: 255, nullable: false })
-    password!: string; // Asserção (ou inicializar na criação)
+    @Column({ type: 'varchar', length: 50, default: 'user' }) // Ex: 'admin', 'user'
+    @IsString()
+    @IsIn(['admin', 'user']) // <-- Validar que o role está na lista permitida
+    role!: string; // Poderia ser UserRole se usasse Enum
 
-    @Column({ type: "varchar", length: 255, nullable: false })
-    salt!: string; // Asserção (ou inicializar na criação)
+    @Column({ type: 'boolean', default: true })
+    @IsBoolean()
+    isActive!: boolean;
 
-    @CreateDateColumn()
-    created_at!: Date; // Asserção de atribuição definitiva (gerenciada pelo TypeORM)
+    // Relações com produtos criados/atualizados por este usuário (opcional, dependendo se Product tem FK para User)
+    @OneToMany(() => Product, product => product.updated_by)
+    updatedProducts!: Product[];
 
-    @UpdateDateColumn()
-    updated_at!: Date; // Asserção de atribuição definitiva (gerenciada pelo TypeORM)
+    @OneToMany(() => Client, client => client.updated_by)
+    updatedClients!: Client[];
+    
+    @OneToMany(() => Order, order => order.updated_by)
+    updatedOrders!: Order[];
+    
+    @OneToMany(() => OrderItem, orderItem => orderItem.updated_by)
+    updatedOrdeItens!: OrderItem[];
+    
+    @OneToMany(() => StockMovement, stockMovement => stockMovement.updated_by)
+    updatedStockMovement!: StockMovement[];
+        
+    @OneToMany(() => User, user => user.updated_by)
+    updatedUsers!: User[];
 
-    @Column({ type: "uuid", nullable: true })
-    updated_by: string | null = null; // Inicializado com null
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @IsDate()
+    created_at!: Date;
 
-    // Relacionamentos e outros campos, se houver
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    @IsDate()
+    updated_at!: Date;
+
+    @Column({ type: 'varchar', length: 50, default: '' }) // Ex: 'admin', 'user'
+    @IsString()
+    updated_by!: string | null; // Pode ser null se updated_by_id for null
 }

@@ -1,33 +1,53 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
-import { Order } from "./Order"; // Importa a entidade Order
+// src/database/entities/Client.ts
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne,JoinColumn,OneToMany } from 'typeorm';
+import { IsUUID, IsString, IsEmail, IsBoolean, IsOptional, MinLength, MaxLength, IsDate } from 'class-validator'; // <-- Adicione os decoradores
 
-@Entity("clients") // Nome da tabela em inglês
+import { Order } from './Order';
+import { User } from './User';
+
+@Entity('clients')
 export class Client {
-    @PrimaryGeneratedColumn("uuid")
-    id!: string; // UUID primary key
+    @PrimaryGeneratedColumn('uuid')
+    @IsUUID()
+    id!: string;
 
-    @Column({ type: "varchar", length: 255, nullable: false })
-    name!: string; // Nome em inglês
+    @Column({ type: 'varchar', length: 255 })
+    @IsString()
+    @MinLength(3)
+    @MaxLength(255)
+    name!: string;
 
-    @Column({ type: "varchar", length: 255, unique: true, nullable: false })
+    @Column({ type: 'varchar', length: 255, unique: true })
+    @IsString()
+    @IsEmail() // <-- Decorador para validar formato de email
     email!: string;
 
-    @Column({ type: "varchar", length: 20, nullable: true })
-    phone!: string | null; // Nome em inglês
+    @Column({ type: 'varchar', length: 20, nullable: true })
+    @IsOptional() // <-- Marque como opcional se o campo é nullable
+    @IsString()
+    phone: string | null = null;
 
-    @Column({ type: "boolean", default: true, nullable: false })
-    is_active!: boolean; // Nome em inglês
+    @Column({ type: 'text', nullable: true })
+    @IsOptional()
+    @IsString()
+    address: string | null = null;
 
-    @CreateDateColumn()
-    created_at!: Date; // Nome em inglês
+    @Column({ type: 'boolean', default: true })
+    @IsBoolean()
+    isActive!: boolean;
 
-    @UpdateDateColumn()
-    updated_at!: Date; // Nome em inglês
-
-    @Column({ type: "uuid", nullable: true })
-    updated_by!: string | null; // Nome em inglês
-
-    // Relacionamento: Um cliente pode ter muitos pedidos (orders)
     @OneToMany(() => Order, order => order.client)
-    orders!: Order[]; // Nome da propriedade em inglês
+    orders!: Order[]; // Relação, não precisa de decorador de validação aqui
+
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @IsDate()
+    created_at!: Date;
+
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    @IsDate()
+    updated_at!: Date;
+
+    @ManyToOne(() => User, { nullable: true }) // Relacionamento com User (atualizador)
+    @JoinColumn({ name: 'updated_by' })
+    updated_by!: User | null; // Pode ser null se updated_by_id for null
 }
