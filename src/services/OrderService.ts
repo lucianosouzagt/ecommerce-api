@@ -6,7 +6,7 @@ import { OrderItem } from '../database/entities/OrderItem'; // Precisa do OrderI
 import { StockMovement } from '../database/entities/StockMovement'; // Precisa do StockMovement
 import { Product } from '../database/entities/Product'; // Precisa do Product para verificar estoque
 import { Client } from '../database/entities/Client'; // Precisa do Client
-import AppDataSource from '../database';
+import { AppDataSource } from '../database';
 import { In, DataSource } from 'typeorm'; // Para transações e consultas IN
 
 // DTOs

@@ -16,6 +16,7 @@ const class_validator_1 = require("class-validator"); // <-- Adicione os decorad
 const Order_1 = require("./Order");
 const Product_1 = require("./Product");
 const User_1 = require("./User");
+const StockMovement_1 = require("./StockMovement");
 let OrderItem = class OrderItem {
 };
 exports.OrderItem = OrderItem;
@@ -59,6 +60,10 @@ __decorate([
     (0, typeorm_1.JoinColumn)({ name: 'product_id' }),
     __metadata("design:type", Product_1.Product)
 ], OrderItem.prototype, "product", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => StockMovement_1.StockMovement, stockMovement => stockMovement.orderItem),
+    __metadata("design:type", Array)
+], OrderItem.prototype, "stockMovements", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
     (0, class_validator_1.IsDate)(),

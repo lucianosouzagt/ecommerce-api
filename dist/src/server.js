@@ -39,11 +39,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // src/server.ts
 require("reflect-metadata"); // Deve ser a primeira linha
 const app_1 = __importDefault(require("./app"));
-const database_1 = __importDefault(require("./database"));
+const database_1 = require("./database");
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const PORT = process.env.PORT || 3000;
-database_1.default.initialize()
+database_1.AppDataSource.initialize()
     .then(() => {
     console.log("Database connected!");
     app_1.default.listen(PORT, () => {

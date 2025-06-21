@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductService = void 0;
+exports.productService = exports.ProductService = void 0;
 const ProductRepository_1 = require("../repositories/ProductRepository");
 const class_validator_1 = require("class-validator"); // TypeORM com class-validator para validação
 // Classe de Serviço para gerenciar a lógica de negócio relacionada a Produtos
@@ -9,6 +9,7 @@ class ProductService {
         // Injeção de dependência (opcional, mas boa prática) ou acesso direto ao repositório exportado
         // private productRepository = AppDataSource.getRepository(Product); // Se não usasse o export constante
         this.productRepository = ProductRepository_1.ProductRepository; // Usando a instância exportada
+        this.productRepositoryWithCustomMethods = ProductRepository_1.ProductRepositoryWithCustomMethods;
     }
     // Método para listar todos os produtos
     async findAll() {
@@ -76,12 +77,18 @@ class ProductService {
         // O TypeORM remove retorna um DeleteResult, que indica quantos registros foram afetados
         const deleteResult = await this.productRepository.delete(id);
         // Retorna true se pelo menos um registro foi afetado, false caso contrário
-        return deleteResult.affected !== undefined && deleteResult.affected > 0;
+        return !!deleteResult.affected && deleteResult.affected > 0;
     }
     // Método para contar produtos (exemplo simples)
     async count() {
         const count = await this.productRepository.count();
         return count;
     }
+    async getActiveProducts() {
+        const is_active = await this.productRepositoryWithCustomMethods.findActiveProducts();
+        return is_active;
+    }
 }
 exports.ProductService = ProductService;
+// Exportar uma instância padrão para facilitar uso nos controllers
+exports.productService = new ProductService();

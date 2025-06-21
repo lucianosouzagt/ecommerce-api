@@ -1,6 +1,6 @@
 // src/services/OrderItemService.ts
 import { OrderItem } from '../database/entities/OrderItem';
-import AppDataSource from '../database';
+import { AppDataSource } from '../database';
 
 // DTOs (se necessário para operações diretas, menos comum)
 // import { CreateOrderItemDTO } from '../dtos/orderItems/CreateOrderItemDTO';

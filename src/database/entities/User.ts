@@ -57,7 +57,7 @@ export class User {
     
     @OneToMany(() => StockMovement, stockMovement => stockMovement.updated_by)
     updatedStockMovement!: StockMovement[];
-        
+
     @OneToMany(() => User, user => user.updated_by)
     updatedUsers!: User[];
 

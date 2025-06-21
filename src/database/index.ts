@@ -13,7 +13,7 @@ import { StockMovement } from "./entities/StockMovement";
 
 dotenv.config(); // Carregar variáveis do .env
 
-const AppDataSource = new DataSource({
+export const AppDataSource = new DataSource({
     type: "postgres",
     host: process.env.POSTGRES_HOST || "localhost",
     port: parseInt(process.env.POSTGRES_PORT || "5432", 10),
@@ -38,4 +38,4 @@ const AppDataSource = new DataSource({
     subscribers: [],
 });
 
-export default AppDataSource; // Exporta para ser usado na aplicação
+//export default AppDataSource; // Exporta para ser usado na aplicação

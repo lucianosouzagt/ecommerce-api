@@ -2,7 +2,7 @@
 import "reflect-metadata"; // Deve ser a primeira linha
 
 import app from './app';
-import AppDataSource from './database';
+import { AppDataSource } from './database';
 import * as dotenv from "dotenv";
 
 dotenv.config();

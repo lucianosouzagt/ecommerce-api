@@ -1,19 +1,31 @@
 // src/app.ts (Exemplo de adição do Global Error Handler)
 import express, { Request, Response, NextFunction } from 'express'; // Importar NextFunction
+import bodyParser from 'body-parser';
+
 import productRoutes from './routes/produto.routes';
+import clientRoutes from './routes/client.routes';
+// import userRoutes from './routes/user.routes'; // Crie esses arquivos depois
+// import orderRoutes from './routes/order.routes'; // Crie esses arquivos depois
+// import stockMovementRoutes from './routes/stockMovement.routes'; // Crie esses arquivos depois
 // ... outras importações
 
 const app = express();
 
 // Middlewares globais (parsing JSON, etc.)
 app.use(express.json());
+app.use(bodyParser.json());
 
 // Montar rotas
 app.use('/v1/produto', productRoutes);
-// app.use('/v1/cliente', clientRoutes);
+app.use('/v1/client', clientRoutes);
 // ...
 app.get('/', (req, res) => {
     res.send('API de Produtos rodando!');
+});
+
+// Rota de fallback para 404 - deve vir por último, antes do middleware de erro
+app.use((req, res, next) => {
+    res.status(404).send({ message: 'Resource not found' });
 });
 
 // Middleware de tratamento de erros global (DEVE ser o último middleware)

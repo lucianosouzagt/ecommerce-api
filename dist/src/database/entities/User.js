@@ -34,7 +34,7 @@ __decorate([
     (0, class_validator_1.MinLength)(3),
     (0, class_validator_1.MaxLength)(255),
     __metadata("design:type", String)
-], User.prototype, "username", void 0);
+], User.prototype, "name", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', length: 255, unique: true }),
     (0, class_validator_1.IsString)(),

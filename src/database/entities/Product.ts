@@ -49,14 +49,15 @@ export class Product {
     @IsDate() // Decorador para validar que é uma data
     updated_at!: Date; // Definido pelo banco/TypeORM, use '!'
 
-    @Column({ type: 'uuid', nullable: true })
-    @IsOptional()
-    @IsUUID()
-    updated_by: string | null = null; // ID do usuário que criou (se aplicável)
+    @ManyToOne(() => User, { nullable: true }) // Relacionamento com User (atualizador)
+    @JoinColumn({ name: 'updated_by' })
+    updated_by!: User | null; // Pode ser null se updated_by_id for null
 
     @OneToMany(() => OrderItem, orderItem => orderItem.product)
     orderItems!: OrderItem[]; // ! indica que o ORM vai inicializar, não precisa ser 'string | null'
 
     @OneToMany(() => StockMovement, stockMovement => stockMovement.product)
     stockMovements!: StockMovement[]; // ! indica que o ORM vai inicializar
+
+
 }

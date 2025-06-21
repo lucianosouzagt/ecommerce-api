@@ -3,7 +3,7 @@ import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { StockMovement } from '../database/entities/StockMovement';
 import { Product } from '../database/entities/Product'; // Para atualizar saldo no produto
-import AppDataSource from '../database';
+import { AppDataSource } from '../database';
 import { DataSource } from 'typeorm'; // Para transações
 
 // DTOs
