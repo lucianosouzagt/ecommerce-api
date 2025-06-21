@@ -1,6 +1,6 @@
 // src/controllers/OrderController.ts
 import { Request, Response } from 'express';
-import { orderService } from '../services';
+import { OrderService } from '../services';
 import { CreateOrderDTO } from '../dtos/orders/CreateOrderDTO';
 import { UpdateOrderDTO } from '../dtos/orders/UpdateOrderDTO';
 import { validate } from 'class-validator';

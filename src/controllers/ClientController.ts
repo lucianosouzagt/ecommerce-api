@@ -8,7 +8,7 @@ export class ClientController {
 
     // O construtor do controller agora aceita uma instância do ClientService
     constructor(clientService?: ClientService) { 
-        this.clientService = clientService || new ClientService(); 
+      this.clientService = clientService || new ClientService(); 
     }
 
     async create(req: Request, res: Response): Promise<Response> {

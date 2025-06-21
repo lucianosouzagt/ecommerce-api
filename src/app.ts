@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 // Montar rotas
-app.use('/v1/produto', productRoutes);
+app.use('/v1/product', productRoutes);
 app.use('/v1/client', clientRoutes);
 // ...
 app.get('/', (req, res) => {

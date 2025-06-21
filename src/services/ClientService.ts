@@ -1,9 +1,10 @@
 // src/services/ClientService.ts
-import { AppDataSource } from '../database'; // Note: ajustei o caminho para 'database'
-import { Client } from '../database/entities/Client';
-import { CreateClientDTO } from '../dtos/clients/CreateClientsDTO';
+import { AppDataSource } from '../database';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
+import { Client } from '../database/entities/Client';
+import { CreateClientDTO } from '../dtos/clients/CreateClientsDTO';
+
 import { Repository } from 'typeorm';
 
 export class ClientService {
