@@ -1,7 +1,7 @@
 // src/database/repositories/OrderRepository.ts
 import { Repository } from 'typeorm';
 import { Order } from '../database/entities/Order'; // Ajuste o caminho
-import AppDataSource from '../database'; // Ajuste o caminho
+import { AppDataSource } from '../database'; // Ajuste o caminho
 
 export const OrderRepository: Repository<Order> = AppDataSource.getRepository(Order);
 

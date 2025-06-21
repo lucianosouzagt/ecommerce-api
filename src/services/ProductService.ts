@@ -1,16 +1,23 @@
-// src/services/ProductService.ts
+import { validate } from 'class-validator';
+import { AppDataSource } from '../database';
 import { Product } from '../database/entities/Product';
-import { ProductRepository } from '../repositories/ProductRepository';
-import { validate } from 'class-validator'; // TypeORM com class-validator para validação
+import { ProductRepositoryWithCustomMethods } from '../repositories/ProductRepository'; // Importe conforme o mock
+import { Repository } from 'typeorm';1
 
 // Classe de Serviço para gerenciar a lógica de negócio relacionada a Produtos
 export class ProductService {
 
-    // Injeção de dependência (opcional, mas boa prática) ou acesso direto ao repositório exportado
-    // private productRepository = AppDataSource.getRepository(Product); // Se não usasse o export constante
-    private productRepository = ProductRepository; // Usando a instância exportada
+    private productRepository: Repository<Product>;
+    private productCustomRepository: typeof ProductRepositoryWithCustomMethods; // Use 'typeof' para o tipo
 
-    // Método para listar todos os produtos
+    // As dependências são injetadas no construtor
+    constructor(
+        productRepository?: Repository<Product>,
+        productCustomRepository?: typeof ProductRepositoryWithCustomMethods
+    ) {
+        this.productRepository = productRepository || AppDataSource.getRepository(Product);
+        this.productCustomRepository = productCustomRepository || ProductRepositoryWithCustomMethods;
+    }
     async findAll(): Promise<Product[]> {
         // Aqui poderíamos adicionar lógica de paginação, filtros, etc.
         const products = await this.productRepository.find();
@@ -86,7 +93,7 @@ export class ProductService {
         const deleteResult = await this.productRepository.delete(id);
 
         // Retorna true se pelo menos um registro foi afetado, false caso contrário
-        return deleteResult.affected !== undefined && deleteResult.affected! > 0;
+        return !!deleteResult.affected && deleteResult.affected > 0;
     }
 
      // Método para contar produtos (exemplo simples)
@@ -94,4 +101,11 @@ export class ProductService {
          const count = await this.productRepository.count();
          return count;
      }
+
+     async getActiveProducts() {
+      return this.productCustomRepository.findActiveProducts();
+    }
 }
+
+// Exportar uma instância padrão para facilitar uso nos controllers
+export const productService = new ProductService();

@@ -1,42 +1,32 @@
 // src/services/OrderService.ts
+import { AppDataSource } from '../database';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { Order } from '../database/entities/Order';
-import { OrderItem } from '../database/entities/OrderItem'; // Precisa do OrderItem também
-import { StockMovement } from '../database/entities/StockMovement'; // Precisa do StockMovement
-import { Product } from '../database/entities/Product'; // Precisa do Product para verificar estoque
-import { Client } from '../database/entities/Client'; // Precisa do Client
-import AppDataSource from '../database';
-import { In, DataSource } from 'typeorm'; // Para transações e consultas IN
+import { OrderItem } from '../database/entities/OrderItem'; 
+import { StockMovement } from '../database/entities/StockMovement';
+import { Product } from '../database/entities/Product';
+import { Client } from '../database/entities/Client';
+import { CreateOrderDTO } from '../dtos/orders/CreateOrderDTO'; 
+import { CreateOrderItemDTO } from '../dtos/orders/CreateOrderItemDTO'; 
+import { UpdateOrderDTO } from '../dtos/orders/UpdateOrderDTO';
 
-// DTOs
-import { CreateOrderDTO } from '../dtos/orders/CreateOrderDTO'; // DTO para criação de pedido
-import { CreateOrderItemDTO } from '../dtos/orders/CreateOrderItemDTO'; // DTO para item de pedido dentro do CreateOrderDTO
-import { UpdateOrderDTO } from '../dtos/orders/UpdateOrderDTO'; // DTO para atualização de pedido
-
-const orderRepository = AppDataSource.getRepository(Order);
-const orderItemRepository = AppDataSource.getRepository(OrderItem);
-const stockMovementRepository = AppDataSource.getRepository(StockMovement);
-const productRepository = AppDataSource.getRepository(Product);
-const clientRepository = AppDataSource.getRepository(Client);
+import { Repository } from 'typeorm';
 
 export class OrderService {
+    private orderRepository: Repository<Order>
+    private orderItemtRepository: Repository<OrderItem>;
+    private stockMovementRepository: Repository<StockMovement>;
+    private productRepository: Repository<Product>;
+    private clientRepository: Repository<Client>;
 
-    /**
-     * Cria um novo pedido com seus itens.
-     * Envolve validação, verificação de estoque e criação de movimentos de estoque.
-     * @param orderData Dados do pedido a ser criado.
-     * @returns O pedido criado.
-     * @throws Error se a validação falhar, cliente/produto não existir, ou estoque insuficiente.
-     */
     async create(orderData: CreateOrderDTO): Promise<Order> {
-        // 1. Validação dos dados de entrada usando class-validator/transformer
-        const orderInstance = plainToInstance(CreateOrderDTO, orderData);
-        const errors = await validate(orderInstance);
+        const orderDto = plainToInstance(CreateOrderDTO, orderData);
+        const errors = await validate(orderDto);
 
         if (errors.length > 0) {
-            console.error('Validation failed: ', errors);
-            throw new Error('Dados do pedido inválidos.');
+            const errorMessages = errors.map(err => Object.values(err.constraints || {})).flat();
+            throw new Error(`Dados do pedido inválidos: ${errorMessages.join(', ')}`);
         }
 
         // Inicia uma transação no banco de dados

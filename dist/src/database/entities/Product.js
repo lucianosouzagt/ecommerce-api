@@ -12,12 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Product = void 0;
 const typeorm_1 = require("typeorm");
 const class_validator_1 = require("class-validator"); // <--- Importe os decoradores
+const User_1 = require("./User");
 const OrderItem_1 = require("./OrderItem");
 const StockMovement_1 = require("./StockMovement");
 let Product = class Product {
     constructor() {
         this.description = null; // Inicialize com null se nullable é true
-        this.updated_by = null; // ID do usuário que criou (se aplicável)
     }
 };
 exports.Product = Product;
@@ -82,9 +82,9 @@ __decorate([
     __metadata("design:type", Date)
 ], Product.prototype, "updated_at", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'uuid', nullable: true }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsUUID)(),
+    (0, typeorm_1.ManyToOne)(() => User_1.User, { nullable: true }) // Relacionamento com User (atualizador)
+    ,
+    (0, typeorm_1.JoinColumn)({ name: 'updated_by' }),
     __metadata("design:type", Object)
 ], Product.prototype, "updated_by", void 0);
 __decorate([

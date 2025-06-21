@@ -2,7 +2,7 @@
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { User } from '../database/entities/User';
-import AppDataSource from '../database';
+import { AppDataSource } from '../database';
 import bcrypt from 'bcrypt'; // Para hash de senhas
 
 

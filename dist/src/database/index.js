@@ -33,6 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppDataSource = void 0;
 // src/database/index.ts
 const typeorm_1 = require("typeorm");
 const dotenv = __importStar(require("dotenv"));
@@ -46,7 +47,7 @@ const StockMovement_1 = require("./entities/StockMovement");
 // Importar suas migrations
 // Ex: import { CreateAllTables1718xxxxxxx } from "./migrations/1718xxxxxxx-CreateAllTables";
 dotenv.config(); // Carregar variáveis do .env
-const AppDataSource = new typeorm_1.DataSource({
+exports.AppDataSource = new typeorm_1.DataSource({
     type: "postgres",
     host: process.env.POSTGRES_HOST || "localhost",
     port: parseInt(process.env.POSTGRES_PORT || "5432", 10),
@@ -70,4 +71,4 @@ const AppDataSource = new typeorm_1.DataSource({
     ],
     subscribers: [],
 });
-exports.default = AppDataSource; // Exporta para ser usado na aplicação
+//export default AppDataSource; // Exporta para ser usado na aplicação

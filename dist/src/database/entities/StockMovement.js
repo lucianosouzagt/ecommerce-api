@@ -15,6 +15,7 @@ const typeorm_1 = require("typeorm");
 const class_validator_1 = require("class-validator"); // <-- Adicione os decoradores
 const Product_1 = require("./Product");
 const User_1 = require("./User");
+const OrderItem_1 = require("./OrderItem");
 // Se preferir usar um Enum para os tipos de movimento, defina-o aqui
 // export enum MovementType { In = 'in', Out = 'out' }
 let StockMovement = class StockMovement {
@@ -35,6 +36,11 @@ __decorate([
     (0, typeorm_1.JoinColumn)({ name: 'product_id' }),
     __metadata("design:type", Product_1.Product)
 ], StockMovement.prototype, "product", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => OrderItem_1.OrderItem, orderItem => orderItem.stockMovements, { nullable: true, onDelete: 'SET NULL' }),
+    (0, typeorm_1.JoinColumn)({ name: 'orderItem_id' }),
+    __metadata("design:type", OrderItem_1.OrderItem)
+], StockMovement.prototype, "orderItem", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'timestamp' }) // Data do movimento
     ,

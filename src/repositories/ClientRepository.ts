@@ -1,7 +1,14 @@
 // src/database/repositories/ClientRepository.ts
 import { Repository } from 'typeorm';
 import { Client } from '../database/entities/Client'; // Ajuste o caminho conforme sua estrutura
-import AppDataSource from '../database'; // Ajuste o caminho conforme sua estrutura
+import { AppDataSource } from '../database'; // Ajuste o caminho conforme sua estrutura
+
+// Definir a interface para os métodos customizados
+interface ProductRepositoryCustom extends Repository<Client> {
+    findActiveProducts(): Promise<Client[]>;
+    // Adicione outras declarações de método aqui
+}
+
 
 export const ClientRepository: Repository<Client> = AppDataSource.getRepository(Client);
 

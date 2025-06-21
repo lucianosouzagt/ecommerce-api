@@ -40,7 +40,7 @@ export class OrderItem {
     @JoinColumn({ name: 'product_id' })
     product!: Product; // Relação
 
-     @OneToMany(() => StockMovement, stockMovement => stockMovement.orderItem)
+    @OneToMany(() => StockMovement, stockMovement => stockMovement.orderItem)
     stockMovements!: StockMovement[];
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
