@@ -11,6 +11,6 @@ export class CreateClientDTO {
     email!: string;
 
     @IsString()
-    @IsOptional() // Opcional para criação, pode ser obrigatório dependendo da regra
-    phone?: string;
+    @IsOptional()
+    address!: string|null;
 }

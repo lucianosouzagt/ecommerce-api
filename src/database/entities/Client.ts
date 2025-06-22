@@ -12,7 +12,7 @@ export class Client {
     email!: string;
 
     @Column()
-    address!: string;
+    address!: string|null;
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     created_at!: Date;

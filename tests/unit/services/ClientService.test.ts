@@ -26,9 +26,9 @@ describe('ClientService', () => {
             create: jest.fn(),
             save: jest.fn(),
             findOneBy: jest.fn(),
-             find: jest.fn(),
-             delete: jest.fn(),
-             merge: jest.fn(),
+            find: jest.fn(),
+            delete: jest.fn(),
+            merge: jest.fn(),
         };
 
          // Fazer com que AppDataSource.getRepository retorne nosso mock de repositório
@@ -50,7 +50,7 @@ describe('ClientService', () => {
         const clientData: CreateClientDTO = {
             name: 'Test Client',
             email: 'test@example.com',
-            phone: '11999998888',
+            address: 'Rua A, 127, Casa 1'
         };
 
         // Simular o que o repositório faria: 'create' retorna uma nova instância, 'save' retorna a instância salva
@@ -93,7 +93,7 @@ describe('ClientService', () => {
          const clientData: CreateClientDTO = {
              name: 'Existing Client',
              email: 'existing@example.com',
-             phone: '11999998888',
+             address: 'Rua A, 127, Casa 1'
          };
 
          // Simular que findOneBy retorna um cliente existente

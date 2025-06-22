@@ -11,6 +11,7 @@ import { CreateClientDTO } from '../../../src/dtos/clients/CreateClientsDTO'; //
 type MockedClientService = {
     create: jest.Mock<Promise<Client>, [CreateClientDTO]>;
     findById: jest.Mock<Promise<Client | null>, [string]>;
+    findByEmail: jest.Mock<Promise<Client | null>, [string]>
     findAll: jest.Mock<Promise<Client[]>, []>;
     update: jest.Mock<Promise<Client | null>, [string, Partial<CreateClientDTO>]>;
     delete: jest.Mock<Promise<boolean>, [string]>;
@@ -29,6 +30,7 @@ describe('ClientController', () => {
         mockClientService = {
             create: jest.fn(),
             findById: jest.fn(),
+            findByEmail: jest.fn(),
             findAll: jest.fn(),
             update: jest.fn(),
             delete: jest.fn(),
@@ -59,21 +61,17 @@ describe('ClientController', () => {
         });
 
         it('should create a client successfully and return 201', async () => {
-            const clientData: CreateClientDTO = { name: 'Test Client', email: 'test@example.com', phone: '11999998888' };
+            const clientData: CreateClientDTO = { name: 'Test Client', email: 'test@example.com', address: 'Rua A, 127, Casa 1' };
 
-            // Trata 'phone' para ser `string | null` conforme a entidade
-            const clientPhoneValue: string | null = clientData.phone !== undefined ? clientData.phone : null;
+            // Trata 'address' para ser `string | null` conforme a entidade
+            const clientAddressValue: string | null = clientData.address !== undefined ? clientData.address : null;
 
             // Objeto `Client` completo, conforme a entidade Client.ts
             const createdClient: Client = {
                 id: 'some-uuid-1',
                 name: clientData.name,
                 email: clientData.email,
-                phone: clientPhoneValue,
-                address: null, // Definido como null, pois é nullable e não está no DTO de criação
-                isActive: true, // Propriedade obrigatória com default `true`
-                orders: [], // Relação OneToMany obrigatória, inicia vazia
-                updated_by: null, // Relação ManyToOne, pode ser null para um novo cliente
+                address: clientAddressValue, // Definido como null, pois é nullable e não está no DTO de criação
                 created_at: new Date('2025-06-21T10:00:00Z'), // Data fixa para testes
                 updated_at: new Date('2025-06-21T10:00:00Z'), // Data fixa para testes
             };
@@ -93,7 +91,7 @@ describe('ClientController', () => {
         });
 
         it('should return 400 for invalid input data (validation error)', async () => {
-            const invalidData: CreateClientDTO = { name: 'ab', email: 'invalid-email', phone: '123' };
+            const invalidData: CreateClientDTO = { name: 'ab', email: 'invalid-email', address: '127' };
             const validationErrorMessage = 'Dados do cliente inválidos: name must be longer than or equal to 3 characters, email must be an email';
 
             mockClientService.create.mockRejectedValue(new Error(validationErrorMessage));
@@ -108,7 +106,7 @@ describe('ClientController', () => {
         });
 
         it('should return 400 if client with email already exists', async () => {
-            const existingClientData: CreateClientDTO = { name: 'Existing User', email: 'existing@example.com', phone: '99999999999' };
+            const existingClientData: CreateClientDTO = { name: 'Existing User', email: 'existing@example.com', address: 'Rua A, 127, Casa 1' };
             const errorMessage = 'Já existe um cliente com este email.';
 
             mockClientService.create.mockRejectedValue(new Error(errorMessage));
@@ -123,7 +121,7 @@ describe('ClientController', () => {
         });
 
         it('should return 500 for an internal server error', async () => {
-            const clientData: CreateClientDTO = { name: 'Error Client', email: 'error@example.com', phone: '11111111111' };
+            const clientData: CreateClientDTO = { name: 'Error Client', email: 'error@example.com', address: 'Rua A, 127, Casa 1' };
             const internalErrorMessage = 'Database connection failed';
 
             mockClientService.create.mockRejectedValue(new Error(internalErrorMessage));
@@ -155,11 +153,7 @@ describe('ClientController', () => {
                 id: clientId,
                 name: 'Found Client',
                 email: 'found@example.com',
-                phone: '11111111111',
-                address: null,
-                isActive: true,
-                orders: [],
-                updated_by: null,
+                address: 'Rua A, 127, Casa 1',
                 created_at: new Date('2025-06-21T10:00:00Z'),
                 updated_at: new Date('2025-06-21T10:00:00Z'),
             };
@@ -219,13 +213,11 @@ describe('ClientController', () => {
             // Array de objetos `Client` completos
             const clients: Client[] = [
                 {
-                    id: '1', name: 'Client A', email: 'a@test.com', phone: null, address: null,
-                    isActive: true, orders: [], updated_by: null,
+                    id: '1', name: 'Client A', email: 'a@test.com', address: null,
                     created_at: new Date('2025-06-20T10:00:00Z'), updated_at: new Date('2025-06-20T10:00:00Z')
                 },
                 {
-                    id: '2', name: 'Client B', email: 'b@test.com', phone: '12345678901', address: 'Rua B',
-                    isActive: true, orders: [], updated_by: null,
+                    id: '2', name: 'Client B', email: 'b@test.com', address: 'Rua B',
                     created_at: new Date('2025-06-20T11:00:00Z'), updated_at: new Date('2025-06-20T11:00:00Z')
                 },
             ];
@@ -263,28 +255,24 @@ describe('ClientController', () => {
 
         it('should update a client successfully and return 200', async () => {
             const clientId = 'update-id';
-            const updateData: Partial<CreateClientDTO> = { name: 'Updated Name', phone: '98765432100' };
+            const updateData: Partial<CreateClientDTO> = { name: 'Updated Name', address: 'Rua A, 127, Casa 1' };
 
             // Simula o cliente que existia antes da atualização
             const existingClient: Client = {
                 id: clientId,
                 name: 'Original Name',
                 email: 'original@example.com',
-                phone: '11111111111',
                 address: 'Original Address',
-                isActive: true,
-                orders: [],
-                updated_by: null,
                 created_at: new Date('2025-06-20T09:00:00Z'),
                 updated_at: new Date('2025-06-20T09:00:00Z'),
             };
 
             // Simula o cliente APÓS a atualização (com as propriedades atualizadas)
             const updatedClient: Client = {
-                ...existingClient, // Mantém as propriedades não alteradas
-                name: updateData.name || existingClient.name, // Aplica a atualização do nome
-                phone: updateData.phone !== undefined ? updateData.phone : existingClient.phone, // Aplica a atualização do telefone, tratando undefined
-                updated_at: new Date('2025-06-21T12:00:00Z'), // Simula a data de atualização
+                ...existingClient, 
+                name: updateData.name || existingClient.name, 
+                address: updateData.address !== undefined ? updateData.address : existingClient.address, 
+                updated_at: new Date('2025-06-21T12:00:00Z'),
             };
 
             mockClientService.update.mockResolvedValue(updatedClient);
