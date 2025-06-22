@@ -1,18 +1,16 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.productService = exports.ProductService = void 0;
-const database_1 = require("../database");
-const Product_1 = require("../database/entities/Product");
-const CreateProductDTO_1 = require("../dtos/products/CreateProductDTO");
-const class_validator_1 = require("class-validator");
-const class_transformer_1 = require("class-transformer");
-class ProductService {
+import { AppDataSource } from '../database/index.js';
+import { Product } from '../database/entities/Product.js';
+import { CreateProductDTO } from '../dtos/products/CreateProductDTO.js';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
+export class ProductService {
+    productRepository;
     constructor(productRepository) {
-        this.productRepository = productRepository || database_1.AppDataSource.getRepository(Product_1.Product);
+        this.productRepository = productRepository || AppDataSource.getRepository(Product);
     }
     async create(productData) {
-        const dto = (0, class_transformer_1.plainToInstance)(CreateProductDTO_1.CreateProductDTO, productData);
-        const errors = await (0, class_validator_1.validate)(dto);
+        const dto = plainToInstance(CreateProductDTO, productData);
+        const errors = await validate(dto);
         if (errors.length > 0) {
             const messages = errors.map(err => Object.values(err.constraints || {})).flat();
             throw new Error(`Dados do produto inválidos: ${messages.join(', ')}`);
@@ -38,5 +36,4 @@ class ProductService {
         return !!result.affected && result.affected > 0;
     }
 }
-exports.ProductService = ProductService;
-exports.productService = new ProductService();
+export const productService = new ProductService();

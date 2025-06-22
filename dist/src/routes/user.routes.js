@@ -1,9 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const UserController_1 = require("../controllers/UserController");
-const router = (0, express_1.Router)();
-const userController = new UserController_1.UserController();
+import { Router } from 'express';
+import { UserController } from '../controllers/UserController.js';
+const router = Router();
+const userController = new UserController();
 router.get('/test', (req, res) => {
     res.send('Rota de usuário OK');
 });
@@ -47,4 +45,4 @@ router.delete('/:id', async (req, res, next) => {
         next(error);
     }
 });
-exports.default = router;
+export default router;

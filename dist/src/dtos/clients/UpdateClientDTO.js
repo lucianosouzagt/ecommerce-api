@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,27 +7,27 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateClientDTO = void 0;
 // src/dtos/clients/UpdateClientDTO.ts
-const class_validator_1 = require("class-validator");
-class UpdateClientDTO {
+import { IsString, IsEmail, IsOptional, Length } from 'class-validator';
+export class UpdateClientDTO {
+    name;
+    email;
+    phone;
 }
-exports.UpdateClientDTO = UpdateClientDTO;
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Length)(3, 100),
-    (0, class_validator_1.IsOptional)() // Todos opcionais para atualização
+    IsString(),
+    Length(3, 100),
+    IsOptional() // Todos opcionais para atualização
     ,
     __metadata("design:type", String)
 ], UpdateClientDTO.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsEmail)(),
-    (0, class_validator_1.IsOptional)(),
+    IsEmail(),
+    IsOptional(),
     __metadata("design:type", String)
 ], UpdateClientDTO.prototype, "email", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
+    IsString(),
+    IsOptional(),
     __metadata("design:type", String)
 ], UpdateClientDTO.prototype, "phone", void 0);

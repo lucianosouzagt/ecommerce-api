@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { StockMovementService } from '../services';
+import { StockMovementService } from '../services/StockMovementService.js';
 
 export class StockMovementController {
     private stockMovementService: StockMovementService;

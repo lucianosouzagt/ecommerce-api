@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,40 +7,58 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrderItem = void 0;
-const typeorm_1 = require("typeorm");
-const Order_1 = require("./Order");
-const Product_1 = require("./Product");
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, } from 'typeorm';
+import { Order } from './Order.js';
+import { Product } from './Product.js';
 let OrderItem = class OrderItem {
+    id;
+    order;
+    product;
+    quantity;
+    unitPrice;
+    totalPrice;
+    created_at;
+    updated_at;
 };
-exports.OrderItem = OrderItem;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
+    PrimaryGeneratedColumn('uuid'),
     __metadata("design:type", String)
 ], OrderItem.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Order_1.Order, order => order.items, { onDelete: 'CASCADE' }),
-    (0, typeorm_1.JoinColumn)({ name: 'order_id' }),
-    __metadata("design:type", Order_1.Order)
+    ManyToOne(() => Order, (order) => order.items, { onDelete: 'CASCADE' }),
+    JoinColumn({ name: 'order_id' }),
+    __metadata("design:type", Object)
 ], OrderItem.prototype, "order", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Product_1.Product, { eager: true }),
-    (0, typeorm_1.JoinColumn)({ name: 'product_id' }),
-    __metadata("design:type", Product_1.Product)
+    ManyToOne(() => Product, { eager: true }),
+    JoinColumn({ name: 'product_id' }),
+    __metadata("design:type", Object)
 ], OrderItem.prototype, "product", void 0);
 __decorate([
-    (0, typeorm_1.Column)('int'),
+    Column('int'),
     __metadata("design:type", Number)
 ], OrderItem.prototype, "quantity", void 0);
 __decorate([
-    (0, typeorm_1.Column)('decimal', { precision: 10, scale: 2 }),
+    Column('decimal', { precision: 10, scale: 2 }),
     __metadata("design:type", Number)
 ], OrderItem.prototype, "unitPrice", void 0);
 __decorate([
-    (0, typeorm_1.Column)('decimal', { precision: 10, scale: 2 }),
+    Column('decimal', { precision: 10, scale: 2 }),
     __metadata("design:type", Number)
 ], OrderItem.prototype, "totalPrice", void 0);
-exports.OrderItem = OrderItem = __decorate([
-    (0, typeorm_1.Entity)('order_items')
+__decorate([
+    CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' }),
+    __metadata("design:type", Date)
+], OrderItem.prototype, "created_at", void 0);
+__decorate([
+    UpdateDateColumn({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP',
+        onUpdate: 'CURRENT_TIMESTAMP',
+    }),
+    __metadata("design:type", Date)
+], OrderItem.prototype, "updated_at", void 0);
+OrderItem = __decorate([
+    Entity('order_items')
 ], OrderItem);
+export { OrderItem };

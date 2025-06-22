@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,28 +7,29 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateProductDTO = void 0;
-const class_validator_1 = require("class-validator");
-class CreateProductDTO {
+import { IsNotEmpty, IsString, IsNumber, Min } from 'class-validator';
+export class CreateProductDTO {
+    name;
+    description;
+    price;
+    stock;
 }
-exports.CreateProductDTO = CreateProductDTO;
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
+    IsNotEmpty(),
+    IsString(),
     __metadata("design:type", String)
 ], CreateProductDTO.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    IsString(),
     __metadata("design:type", String)
 ], CreateProductDTO.prototype, "description", void 0);
 __decorate([
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(0),
+    IsNumber(),
+    Min(0),
     __metadata("design:type", Number)
 ], CreateProductDTO.prototype, "price", void 0);
 __decorate([
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(0),
+    IsNumber(),
+    Min(0),
     __metadata("design:type", Number)
 ], CreateProductDTO.prototype, "stock", void 0);

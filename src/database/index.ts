@@ -1,18 +1,15 @@
 // src/database/index.ts
 import { DataSource } from "typeorm";
 import * as dotenv from "dotenv";
-// Importar as entidades em inglês:
-import { User } from "./entities/User";
-import { Client } from "./entities/Client";
-import { Product } from "./entities/Product";
-import { Order } from "./entities/Order";
-import { OrderItem } from "./entities/OrderItem";
-import { StockMovement } from "./entities/StockMovement";
-// Importar suas migrations
-// Ex: import { CreateAllTables1718xxxxxxx } from "./migrations/1718xxxxxxx-CreateAllTables";
 
-dotenv.config(); // Carregar variáveis do .env
+import { User } from "./entities/User.js";
+import { Client } from "./entities/Client.js";
+import { Product } from "./entities/Product.js";
+import { Order } from "./entities/Order.js";
+import { OrderItem } from "./entities/OrderItem.js";
+import { StockMovement } from "./entities/StockMovement.js";
 
+dotenv.config(); 
 export const AppDataSource = new DataSource({
     type: "postgres",
     host: process.env.POSTGRES_HOST || "localhost",
@@ -31,11 +28,8 @@ export const AppDataSource = new DataSource({
         StockMovement
     ], // LISTA DE TODAS AS SUAS ENTIDADES
     migrations: [
-        "src/database/migrations/*.ts"
-        // Liste seus arquivos de migration aqui
-        // Ex: "src/database/migrations/*.ts"
+        "src/database/migrations/*.ts",
+        "src/database/seeds/*.ts"
     ],
     subscribers: [],
 });
-
-//export default AppDataSource; // Exporta para ser usado na aplicação

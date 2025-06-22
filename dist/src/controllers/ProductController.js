@@ -1,10 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductController = void 0;
-const services_1 = require("../services");
-class ProductController {
+import { ProductService } from '../services/ProductService.js';
+export class ProductController {
+    productService;
     constructor(productService) {
-        this.productService = productService || new services_1.ProductService();
+        this.productService = productService || new ProductService();
     }
     async create(req, res) {
         try {
@@ -69,4 +67,3 @@ class ProductController {
         }
     }
 }
-exports.ProductController = ProductController;

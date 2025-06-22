@@ -2,14 +2,16 @@
   "name": "ecommerce-api",
   "version": "1.0.0",
   "description": "Projeto final para pos de arquitetura de software",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "typeorm": "typeorm-ts-node-commonjs",
+    "typeorm": "node --loader ts-node/esm ./node_modules/typeorm/cli.js",
     "migration:create": "npx typeorm migration:create",
-    "migration:run": "typeorm-ts-node-commonjs migration:run --dataSource src/database/index.ts",
-    "migration:revert": "typeorm-ts-node-commonjs migration:revert --dataSource src/database/index.ts",
+    "migration:run": "npm run typeorm migration:run -- --dataSource src/database/index.ts",
+    "migration:revert": "npx typeorm migration:revert --dataSource src/database/index.ts",
+    "seed:run": "npx typeorm-extension seed:run --dataSource src/database/index.ts",
     "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch"
@@ -21,7 +23,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/lucianosouzagt/ecommerce-api/issues"
   },
@@ -37,7 +38,9 @@
     "express": "^5.1.0",
     "pg": "^8.16.1",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.24"
+    "typeorm": "^0.3.24",
+    "typeorm-extension": "^3.7.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
@@ -49,6 +52,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.3",
     "@types/supertest": "^6.0.3",
+    "@types/uuid": "^10.0.0",
     "commitizen": "^4.3.1",
     "eslint": "^9.29.0",
     "husky": "^9.1.7",

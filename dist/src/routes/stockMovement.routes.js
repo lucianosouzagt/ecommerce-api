@@ -1,9 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const StockMovementController_1 = require("../controllers/StockMovementController");
-const router = (0, express_1.Router)();
-const stockMovementController = new StockMovementController_1.StockMovementController();
+import { Router } from 'express';
+import { StockMovementController } from '../controllers/StockMovementController.js';
+const router = Router();
+const stockMovementController = new StockMovementController();
 router.get('/test', (req, res) => {
     res.send('Rota de movimentações de estoque OK');
 });
@@ -31,4 +29,4 @@ router.get('/product/:id', async (req, res, next) => {
         next(error);
     }
 });
-exports.default = router;
+export default router;

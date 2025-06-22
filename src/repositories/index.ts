@@ -1,7 +1,7 @@
 // src/repositories/index.ts
-export * from './ClientRepository';
-export * from './OrderRepository';
-export * from './OrderItemRepository';
-export * from './ProductRepository';
-export * from './StockMovementRepository';
-export * from './UserRepository';
+export * from './ClientRepository.js';
+export * from './OrderRepository.js';
+export * from './OrderItemRepository.js';
+export * from './ProductRepository.js';
+export * from './StockMovementRepository.js';
+export * from './UserRepository.js';

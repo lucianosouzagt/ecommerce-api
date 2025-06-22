@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserRepositoryWithCustomMethods = exports.UserRepository = void 0;
-const User_1 = require("../database/entities/User"); // Ajuste o caminho conforme sua estrutura
-const database_1 = require("../database"); // Ajuste o caminho conforme sua estrutura
+import { AppDataSource } from '../database/index.js';
+import { User } from '../database/entities/User.js';
 // Exporta a instância do repositório diretamente
-exports.UserRepository = database_1.AppDataSource.getRepository(User_1.User);
+export const UserRepository = AppDataSource.getRepository(User);
 // Podemos adicionar métodos customizados aqui se necessário
 // Exemplo: buscar usuário por email (se AppDataSource já estiver inicializado)
-exports.UserRepositoryWithCustomMethods = exports.UserRepository.extend({
+export const UserRepositoryWithCustomMethods = UserRepository.extend({
     findByEmail(email) {
         return this.findOne({ where: { email } });
     }

@@ -1,4 +1,3 @@
-"use strict";
 // jest.config.js
 module.exports = {
     preset: 'ts-jest', // Usa ts-jest para lidar com arquivos TypeScript
@@ -13,3 +12,4 @@ module.exports = {
     },
     modulePaths: ["<rootDir>/src"], // Para resolver imports como "src/entities/Client"
 };
+export {};

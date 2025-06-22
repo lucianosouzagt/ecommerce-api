@@ -1,26 +1,21 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
 // src/app.ts (Exemplo de adição do Global Error Handler)
-const express_1 = __importDefault(require("express"));
-const body_parser_1 = __importDefault(require("body-parser"));
-const user_routes_1 = __importDefault(require("./routes/user.routes"));
-const client_routes_1 = __importDefault(require("./routes/client.routes"));
-const produto_routes_1 = __importDefault(require("./routes/produto.routes"));
-const order_routes_1 = __importDefault(require("./routes/order.routes"));
-const stockMovement_routes_1 = __importDefault(require("./routes/stockMovement.routes"));
-const app = (0, express_1.default)();
+import express from 'express';
+import bodyParser from 'body-parser';
+import userRoutes from './routes/user.routes.js';
+import clientRoutes from './routes/client.routes.js';
+import productRoutes from './routes/produto.routes.js';
+import orderRoutes from './routes/order.routes.js';
+import stockMovementRoutes from './routes/stockMovement.routes.js';
+const app = express();
 // Middlewares globais (parsing JSON, etc.)
-app.use(express_1.default.json());
-app.use(body_parser_1.default.json());
+app.use(express.json());
+app.use(bodyParser.json());
 // Montar rotas
-app.use('/v1/user', user_routes_1.default);
-app.use('/v1/client', client_routes_1.default);
-app.use('/v1/product', produto_routes_1.default);
-app.use('/v1/order', order_routes_1.default);
-app.use('/v1/stock', stockMovement_routes_1.default);
+app.use('/v1/user', userRoutes);
+app.use('/v1/client', clientRoutes);
+app.use('/v1/product', productRoutes);
+app.use('/v1/order', orderRoutes);
+app.use('/v1/stock', stockMovementRoutes);
 // ...
 app.get('/', (req, res) => {
     res.send('API de Produtos rodando!');
@@ -42,4 +37,4 @@ app.use((err, req, res, next) => {
         // stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
     });
 });
-exports.default = app;
+export default app;

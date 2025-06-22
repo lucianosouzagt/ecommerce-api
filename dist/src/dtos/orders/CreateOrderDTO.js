@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,36 +7,45 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateOrderDTO = void 0;
-const class_validator_1 = require("class-validator");
-const class_transformer_1 = require("class-transformer");
+import { IsUUID, IsNumber, IsEnum, IsNotEmpty, ArrayMinSize, ValidateNested, Min } from 'class-validator';
+import { Type } from 'class-transformer';
+export var OrderStatus;
+(function (OrderStatus) {
+    OrderStatus["PENDING"] = "pending";
+    OrderStatus["COMPLETED"] = "completed";
+    OrderStatus["CANCELED"] = "canceled";
+})(OrderStatus || (OrderStatus = {}));
 class OrderItemDTO {
+    productId;
+    quantity;
 }
 __decorate([
-    (0, class_validator_1.IsUUID)(),
+    IsUUID(),
     __metadata("design:type", String)
 ], OrderItemDTO.prototype, "productId", void 0);
 __decorate([
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(1),
+    IsNumber(),
+    Min(1),
     __metadata("design:type", Number)
 ], OrderItemDTO.prototype, "quantity", void 0);
-class CreateOrderDTO {
+export class CreateOrderDTO {
+    clientId;
+    status;
+    items;
 }
-exports.CreateOrderDTO = CreateOrderDTO;
 __decorate([
-    (0, class_validator_1.IsUUID)(),
+    IsUUID('4', { message: 'O ID do cliente deve ser um UUID válido.' }),
+    IsNotEmpty({ message: 'O ID do cliente não pode ser vazio.' }),
     __metadata("design:type", String)
 ], CreateOrderDTO.prototype, "clientId", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    IsEnum(OrderStatus, { message: 'O status do pedido deve ser um dos valores permitidos.' }),
+    IsNotEmpty({ message: 'O status do pedido não pode ser vazio.' }),
     __metadata("design:type", String)
 ], CreateOrderDTO.prototype, "status", void 0);
 __decorate([
-    (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.ValidateNested)({ each: true }),
-    (0, class_transformer_1.Type)(() => OrderItemDTO),
+    ArrayMinSize(1, { message: 'O pedido deve conter pelo menos um item.' }),
+    ValidateNested({ each: true }),
+    Type(() => OrderItemDTO),
     __metadata("design:type", Array)
 ], CreateOrderDTO.prototype, "items", void 0);

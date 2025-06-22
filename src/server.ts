@@ -1,8 +1,8 @@
 // src/server.ts
-import "reflect-metadata"; // Deve ser a primeira linha
+import "reflect-metadata"; 
 
-import app from './app';
-import { AppDataSource } from './database';
+import app from './app.js';
+import { AppDataSource } from './database/index.js';
 import * as dotenv from "dotenv";
 
 dotenv.config();

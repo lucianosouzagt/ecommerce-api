@@ -1,14 +1,30 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClientRepository = void 0;
-const Client_1 = require("../database/entities/Client"); // Ajuste o caminho conforme sua estrutura
-const database_1 = require("../database"); // Ajuste o caminho conforme sua estrutura
-exports.ClientRepository = database_1.AppDataSource.getRepository(Client_1.Client);
-// Exemplo de um método customizado (para adicionar no futuro, se necessário)
-/*
-export const ClientRepositoryWithCustomMethods = ClientRepository.extend({
-    findActiveClients() {
-        return this.find({ where: { active: true } });
+import { AppDataSource } from '../database/index.js';
+import { Client } from '../database/entities/Client.js';
+/**
+ * Repositório customizado para a entidade Client.
+ * Ele estende o repositório base do TypeORM e adiciona métodos específicos para Client.
+ */
+export const ClientRepository = AppDataSource.getRepository(Client).extend({
+    async findAll() {
+        return this.find();
+    },
+    async findByEmail(email) {
+        return this.findOne({ where: { email: email } });
+    },
+    async create(clientData) {
+        const newClient = this.create(clientData);
+        return this.save(newClient);
+    },
+    async update(id, updateData) {
+        const clientToUpdate = await this.findOne({ where: { id: id } });
+        if (!clientToUpdate) {
+            return null;
+        }
+        Object.assign(clientToUpdate, updateData);
+        return this.save(clientToUpdate);
+    },
+    async delete(id) {
+        const deleteResult = await this.delete(id);
+        return !!deleteResult.affected && deleteResult.affected > 0;
     }
 });
-*/ 

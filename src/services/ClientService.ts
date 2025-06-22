@@ -1,9 +1,9 @@
 // src/services/ClientService.ts
-import { AppDataSource } from '../database';
+import { AppDataSource } from '../database/index.js';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { Client } from '../database/entities/Client';
-import { CreateClientDTO } from '../dtos/clients/CreateClientsDTO';
+import { Client } from '../database/entities/Client.js';
+import { CreateClientDTO } from '../dtos/clients/CreateClientsDTO.js';
 
 import { Repository } from 'typeorm';
 
@@ -29,11 +29,14 @@ export class ClientService {
         }
 
         const client = this.clientRepository.create(clientData);
-        const savedClient = await this.clientRepository.save(client); // Retorne o resultado do save para incluir createdAt/updatedAt
+        const savedClient = await this.clientRepository.save(client);
         return savedClient;
     }
 
-    // ... (Mantenha e ajuste os outros métodos para usar 'this.clientRepository')
+    async findByEmail(email: string): Promise<Client | null> {
+        return this.clientRepository.findOneBy({ email });
+    }
+
     async findById(id: string): Promise<Client | null> {
         return this.clientRepository.findOneBy({ id });
     }

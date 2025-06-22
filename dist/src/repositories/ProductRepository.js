@@ -1,11 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductRepository = void 0;
-const database_1 = require("../database");
-const Product_1 = require("../database/entities/Product");
-class ProductRepository {
+import { AppDataSource } from '../database/index.js';
+import { Product } from '../database/entities/Product.js';
+export class ProductRepository {
+    repo;
     constructor() {
-        this.repo = database_1.AppDataSource.getRepository(Product_1.Product);
+        this.repo = AppDataSource.getRepository(Product);
     }
     async findAll() {
         return this.repo.find();
@@ -29,4 +27,3 @@ class ProductRepository {
         return !!result.affected && result.affected > 0;
     }
 }
-exports.ProductRepository = ProductRepository;

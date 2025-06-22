@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.StockMovementRepository = void 0;
-const StockMovement_1 = require("../database/entities/StockMovement"); // Ajuste o caminho
-const database_1 = require("../database"); // Ajuste o caminho
-exports.StockMovementRepository = database_1.AppDataSource.getRepository(StockMovement_1.StockMovement);
+import { AppDataSource } from '../database/index.js';
+import { StockMovement } from '../database/entities/StockMovement.js';
+export const StockMovementRepository = AppDataSource.getRepository(StockMovement);
 // Exemplo de um método customizado (para adicionar no futuro, se necessário)
 /*
 export const StockMovementRepositoryWithCustomMethods = StockMovementRepository.extend({

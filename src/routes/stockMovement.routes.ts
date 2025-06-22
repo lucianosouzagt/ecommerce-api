@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { StockMovementController } from '../controllers/StockMovementController';
+import { StockMovementController } from '../controllers/StockMovementController.js';
 
 const router = Router();
 const stockMovementController = new StockMovementController();

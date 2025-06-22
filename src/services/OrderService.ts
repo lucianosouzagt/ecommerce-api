@@ -1,12 +1,27 @@
-import { AppDataSource } from '../database';
+import { AppDataSource } from '../database/index.js';
 import { Repository } from 'typeorm';
-import { Order } from '../database/entities/Order';
-import { CreateOrderDTO } from '../dtos/orders/CreateOrderDTO';
-import { validate } from 'class-validator';
+import { Order } from '../database/entities/Order.js';
+import { CreateOrderDTO } from '../dtos/orders/CreateOrderDTO.js';
+import { validate, ValidationError } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { Client } from '../database/entities/Client';
-import { Product } from '../database/entities/Product';
-import { OrderItem } from '../database/entities/OrderItem';
+import { Client } from '../database/entities/Client.js';
+import { Product } from '../database/entities/Product.js';
+import { OrderItem } from '../database/entities/OrderItem.js';
+
+// Função auxiliar para extrair todas as mensagens de erro de validação, incluindo as aninhadas
+function getValidationMessages(errors: ValidationError[]): string[] {
+    let messages: string[] = [];
+    errors.forEach(err => {
+        if (err.constraints) {
+            messages = messages.concat(Object.values(err.constraints));
+        }
+        if (err.children && err.children.length > 0) {
+            // Recursivamente busca por erros em objetos aninhados
+            messages = messages.concat(getValidationMessages(err.children));
+        }
+    });
+    return messages;
+}
 
 export class OrderService {
     private orderRepository: Repository<Order>;
@@ -20,8 +35,9 @@ export class OrderService {
     async create(orderData: CreateOrderDTO): Promise<Order> {
         const dto = plainToInstance(CreateOrderDTO, orderData);
         const errors = await validate(dto);
+
         if (errors.length > 0) {
-            const messages = errors.map(err => Object.values(err.constraints || {})).flat();
+            const messages = getValidationMessages(errors); // Usa a função auxiliar
             throw new Error(`Dados do pedido inválidos: ${messages.join(', ')}`);
         }
 
@@ -79,7 +95,6 @@ export class OrderService {
         const order = await this.orderRepository.findOneBy({ id });
         if (!order) return null;
 
-        // Neste exemplo não atualizamos itens nem cliente — só status
         this.orderRepository.merge(order, {
             status: data.status ?? order.status,
         });
@@ -94,3 +109,4 @@ export class OrderService {
 }
 
 export const orderService = new OrderService();
+2

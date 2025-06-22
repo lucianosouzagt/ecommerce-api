@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,29 +7,29 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateUserDTO = void 0;
 // src/dtos/users/UpdateUserDTO.ts
-const class_validator_1 = require("class-validator");
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 // Usamos IsOptional para permitir atualizações parciais
-class UpdateUserDTO {
+export class UpdateUserDTO {
+    name;
+    email;
+    password; // A senha será hashed se presente
 }
-exports.UpdateUserDTO = UpdateUserDTO;
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)({ message: 'Name cannot be empty' }),
+    IsOptional(),
+    IsString(),
+    IsNotEmpty({ message: 'Name cannot be empty' }),
     __metadata("design:type", String)
 ], UpdateUserDTO.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEmail)({}, { message: 'Invalid email format' }),
-    (0, class_validator_1.IsNotEmpty)({ message: 'Email cannot be empty' }),
+    IsOptional(),
+    IsEmail({}, { message: 'Invalid email format' }),
+    IsNotEmpty({ message: 'Email cannot be empty' }),
     __metadata("design:type", String)
 ], UpdateUserDTO.prototype, "email", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(8, { message: 'Password must be at least 8 characters long' }),
+    IsOptional(),
+    IsString(),
+    MinLength(8, { message: 'Password must be at least 8 characters long' }),
     __metadata("design:type", String)
 ], UpdateUserDTO.prototype, "password", void 0);

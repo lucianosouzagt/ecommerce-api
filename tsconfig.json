@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es2020",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "module": "commonjs",
-    "moduleResolution": "node",                                /* Specify what module code is generated. */
+    "target": "es2024",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext", 
     "rootDirs": ["./","./src"],                          /* Specify the root folder within your source files. */
     "outDir": "./dist",                                  /* Specify an output folder for all emitted files. */
     "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
@@ -19,6 +19,8 @@
     "./*.ts",
   ],
   "exclude": [ // <-- Adicione este array aqui
-    "node_modules"
+    "node_modules",
+    "src/database/migrations/*.ts",
+    "src/database/seeds/*.ts"
   ]
 }
