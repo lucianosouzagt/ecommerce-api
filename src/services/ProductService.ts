@@ -1,111 +1,49 @@
-import { validate } from 'class-validator';
 import { AppDataSource } from '../database';
+import { Repository } from 'typeorm';
 import { Product } from '../database/entities/Product';
-import { ProductRepositoryWithCustomMethods } from '../repositories/ProductRepository'; // Importe conforme o mock
-import { Repository } from 'typeorm';1
+import { CreateProductDTO } from '../dtos/products/CreateProductDTO';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
 
-// Classe de Serviço para gerenciar a lógica de negócio relacionada a Produtos
 export class ProductService {
-
     private productRepository: Repository<Product>;
-    private productCustomRepository: typeof ProductRepositoryWithCustomMethods; // Use 'typeof' para o tipo
 
-    // As dependências são injetadas no construtor
-    constructor(
-        productRepository?: Repository<Product>,
-        productCustomRepository?: typeof ProductRepositoryWithCustomMethods
-    ) {
+    constructor(productRepository?: Repository<Product>) {
         this.productRepository = productRepository || AppDataSource.getRepository(Product);
-        this.productCustomRepository = productCustomRepository || ProductRepositoryWithCustomMethods;
-    }
-    async findAll(): Promise<Product[]> {
-        // Aqui poderíamos adicionar lógica de paginação, filtros, etc.
-        const products = await this.productRepository.find();
-        return products;
     }
 
-    // Método para buscar um produto por ID
-    async findById(id: string): Promise<Product | null> {
-        // Regra de negócio: garantir que o ID é válido (UUID, se aplicável)
-        // Embora o TypeORM possa validar UUIDs na consulta, validações de formato podem vir antes.
-        // Se o ID não for encontrado, o findOneById retorna null.
-        const product = await this.productRepository.findOne({ where: { id } });
-        return product;
-    }
-
-    // Método para criar um novo produto
-    async create(productData: Partial<Product>): Promise<Product> {
-        // 1. Regra de Negócio/Validação: Validar os dados de entrada
-        const newProduct = this.productRepository.create(productData); // Cria uma instância da entidade
-        const errors = await validate(newProduct); // Usa class-validator para validar
+    async create(productData: CreateProductDTO): Promise<Product> {
+        const dto = plainToInstance(CreateProductDTO, productData);
+        const errors = await validate(dto);
         if (errors.length > 0) {
-             // Lançar um erro customizado ou uma exceção com detalhes dos erros de validação
-             // Ex: throw new ValidationException(errors);
-             console.error("Erros de validação ao criar produto:", errors);
-             // Para simplificar por enquanto, vamos apenas lançar um erro genérico ou processar de forma básica:
-             const errorMessage = errors.map(err => Object.values(err.constraints || {})).join(', ');
-             throw new Error(`Validation failed: ${errorMessage}`);
+            const messages = errors.map(err => Object.values(err.constraints || {})).flat();
+            throw new Error(`Dados do produto inválidos: ${messages.join(', ')}`);
         }
 
-        // 2. Regra de Negócio: Verificar se o produto já existe (se necessário, ex: por nome único)
-        // const existingProduct = await this.productRepository.findOne({ where: { name: newProduct.name } });
-        // if (existingProduct) {
-        //     throw new Error(`Product with name "${newProduct.name}" already exists.`);
-        // }
-
-        // 3. Persistir no banco de dados usando o repositório
-        const savedProduct = await this.productRepository.save(newProduct);
-        return savedProduct;
+        const product = this.productRepository.create(productData);
+        return await this.productRepository.save(product);
     }
 
-    // Método para atualizar um produto existente
-    async update(id: string, updateData: Partial<Product>): Promise<Product | null> {
-        // 1. Regra de Negócio: Buscar o produto existente
-        const productToUpdate = await this.productRepository.findOne({ where: { id } });
-        if (!productToUpdate) {
-            return null; // Produto não encontrado
-        }
-
-        // 2. Regra de Negócio/Validação: Aplicar as atualizações e validar
-        this.productRepository.merge(productToUpdate, updateData); // Mescla os dados de atualização na entidade
-        const errors = await validate(productToUpdate); // Valida a entidade mesclada
-         if (errors.length > 0) {
-             console.error(`Erros de validação ao atualizar produto ${id}:`, errors);
-             const errorMessage = errors.map(err => Object.values(err.constraints || {})).join(', ');
-             throw new Error(`Validation failed during update: ${errorMessage}`);
-        }
-
-        // 3. Persistir as alterações
-        const updatedProduct = await this.productRepository.save(productToUpdate);
-        return updatedProduct;
+    async findById(id: string): Promise<Product | null> {
+        return this.productRepository.findOneBy({ id });
     }
 
-    // Método para remover um produto
+    async findAll(): Promise<Product[]> {
+        return this.productRepository.find();
+    }
+
+    async update(id: string, productData: Partial<CreateProductDTO>): Promise<Product | null> {
+        const product = await this.productRepository.findOneBy({ id });
+        if (!product) return null;
+
+        this.productRepository.merge(product, productData);
+        return await this.productRepository.save(product);
+    }
+
     async delete(id: string): Promise<boolean> {
-        // 1. Regra de Negócio: Verificar dependências (Ex: não pode deletar produto com pedidos ativos)
-        // const hasActiveOrders = await this.orderItemRepository.count({ where: { product_id: id, order: { status: Not('Completed') } } }); // Exemplo complexo
-        // if (hasActiveOrders > 0) {
-        //    throw new Error('Cannot delete product with active orders.');
-        // }
-
-        // 2. Remover o produto usando o repositório
-        // O TypeORM remove retorna um DeleteResult, que indica quantos registros foram afetados
-        const deleteResult = await this.productRepository.delete(id);
-
-        // Retorna true se pelo menos um registro foi afetado, false caso contrário
-        return !!deleteResult.affected && deleteResult.affected > 0;
-    }
-
-     // Método para contar produtos (exemplo simples)
-     async count(): Promise<number> {
-         const count = await this.productRepository.count();
-         return count;
-     }
-
-     async getActiveProducts() {
-      return this.productCustomRepository.findActiveProducts();
+        const result = await this.productRepository.delete(id);
+        return !!result.affected && result.affected > 0;
     }
 }
 
-// Exportar uma instância padrão para facilitar uso nos controllers
 export const productService = new ProductService();

@@ -10,24 +10,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateProductDTO = void 0;
-// src/dtos/products/CreateProductDTO.ts
 const class_validator_1 = require("class-validator");
 class CreateProductDTO {
 }
 exports.CreateProductDTO = CreateProductDTO;
 __decorate([
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Length)(3, 255),
     __metadata("design:type", String)
 ], CreateProductDTO.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateProductDTO.prototype, "description", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(0) // Preço não pode ser negativo
-    ,
+    (0, class_validator_1.Min)(0),
     __metadata("design:type", Number)
 ], CreateProductDTO.prototype, "price", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(0),
+    __metadata("design:type", Number)
+], CreateProductDTO.prototype, "stock", void 0);

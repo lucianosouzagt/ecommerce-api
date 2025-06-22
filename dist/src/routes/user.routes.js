@@ -1,13 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-// src/routes/client.routes.ts
-const express_1 = require("express"); // Importar NextFunction
+const express_1 = require("express");
 const UserController_1 = require("../controllers/UserController");
 const router = (0, express_1.Router)();
 const userController = new UserController_1.UserController();
-// Handler de teste simples
-router.get('/test', (req, res, next) => {
-    res.send('Test Route OK');
+router.get('/test', (req, res) => {
+    res.send('Rota de usuário OK');
 });
 router.post('/', async (req, res, next) => {
     try {

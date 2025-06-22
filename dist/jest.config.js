@@ -1,20 +1,15 @@
 "use strict";
-/** @type {import('ts-jest').JestConfigWithTsJest} */
+// jest.config.js
 module.exports = {
-    preset: 'ts-jest',
-    testEnvironment: 'node',
-    setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"], // Verifique este caminho
-    testMatch: ["**/**/*.test.ts"], // Procura por arquivos .test.ts em qualquer subdiretório
-    verbose: true, // Exibe mais detalhes durante a execução dos testes
-    // Opcional: Configuração de coverage
-    collectCoverage: true,
-    coverageDirectory: "coverage",
-    coverageReporters: ["json", "lcov", "text", "clover"],
-    // Configurações para ignorar certos diretórios ou arquivos
-    modulePathIgnorePatterns: ["<rootDir>/dist/"],
-    // Pode ser necessário configurar aliases de módulo se você usar
-    // caminhos customizados em seu tsconfig.json (ex: "@entities": "./src/entities")
+    preset: 'ts-jest', // Usa ts-jest para lidar com arquivos TypeScript
+    testEnvironment: 'node', // Define o ambiente de teste como Node.js
+    testMatch: [
+        "**/tests/**/**/*.test.ts" // Onde o Jest deve procurar seus arquivos de teste
+    ],
+    setupFilesAfterEnv: ["<rootDir>/__tests__/setup.ts"], // Arquivo de setup global para mocks
     moduleNameMapper: {
-        '^@/(.*)$': '<rootDir>/src/$1', // Exemplo se você usa @/ no seu código
+    // Se você usa aliases no seu tsconfig.json (ex: '@/' para 'src/'), configure aqui
+    // Exemplo: '^@/(.*)$': '<rootDir>/src/$1',
     },
+    modulePaths: ["<rootDir>/src"], // Para resolver imports como "src/entities/Client"
 };

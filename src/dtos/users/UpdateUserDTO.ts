@@ -1,23 +1,20 @@
 // src/dtos/users/UpdateUserDTO.ts
-import { IsString, IsEmail, Length, IsOptional, IsIn } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
+// Usamos IsOptional para permitir atualizações parciais
 export class UpdateUserDTO {
-    @IsString()
-    @Length(3, 100)
-    @IsOptional() // Todos opcionais para atualização
-    name?: string;
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty({ message: 'Name cannot be empty' })
+  name?: string;
 
-    @IsEmail()
-    @IsOptional()
-    email?: string;
+  @IsOptional()
+  @IsEmail({}, { message: 'Invalid email format' })
+  @IsNotEmpty({ message: 'Email cannot be empty' })
+  email?: string;
 
-    @IsString()
-    @Length(6, 50)
-    @IsOptional() // Senha opcional na atualização
-    password?: string;
-
-    @IsString()
-    @IsOptional()
-    @IsIn(['user', 'admin', 'manager']) // Definir papéis permitidos
-    role?: string;
+  @IsOptional()
+  @IsString()
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  password?: string; // A senha será hashed se presente
 }
