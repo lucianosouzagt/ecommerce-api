@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClientController = void 0;
 // Importe a CLASSE do serviço
-const services_1 = require("../services"); // ou o caminho direto para ClientService.ts
+const services_1 = require("../services");
 class ClientController {
     // O construtor do controller agora aceita uma instância do ClientService
     constructor(clientService) {
-        this.clientService = clientService || new services_1.ClientService(); // Se não for fornecido, cria uma nova instância
+        this.clientService = clientService || new services_1.ClientService();
     }
     async create(req, res) {
         try {

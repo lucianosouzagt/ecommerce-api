@@ -2,123 +2,70 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderController = void 0;
 const services_1 = require("../services");
-const CreateOrderDTO_1 = require("../dtos/orders/CreateOrderDTO");
-const UpdateOrderDTO_1 = require("../dtos/orders/UpdateOrderDTO");
-const class_validator_1 = require("class-validator");
-const class_transformer_1 = require("class-transformer");
 class OrderController {
+    constructor(orderService) {
+        this.orderService = orderService || new services_1.OrderService();
+    }
     async create(req, res) {
         try {
-            const orderData = req.body;
-            const orderDto = (0, class_transformer_1.plainToInstance)(CreateOrderDTO_1.CreateOrderDTO, orderData);
-            const errors = await (0, class_validator_1.validate)(orderDto);
-            if (errors.length > 0) {
-                return res.status(400).json({ message: 'Dados de entrada do pedido inválidos', errors });
-            }
-            const order = await services_1.orderService.create(orderData);
+            const order = await this.orderService.create(req.body);
             return res.status(201).json(order);
         }
         catch (error) {
-            console.error('Erro no OrderController.create:', error);
-            // Tratar erros específicos vindos do OrderService
-            if (error.message.includes('Cliente com ID') || error.message.includes('Produto(s) com IDs')) {
-                return res.status(404).json({ message: error.message }); // Cliente ou Produto não encontrado
+            if (error.message.includes('inválido') || error.message.includes('Cliente')) {
+                return res.status(400).json({ message: error.message });
             }
-            if (error.message.includes('Estoque insuficiente')) {
-                return res.status(409).json({ message: error.message }); // Conflito de estoque
-            }
-            if (error.message.includes('Dados do pedido inválidos') || error.message.includes('Dados do item do pedido inválidos')) {
-                return res.status(400).json({ message: error.message }); // Validação no service
-            }
-            return res.status(500).json({ message: 'Erro interno ao criar pedido' });
+            console.error('Erro ao criar pedido:', error);
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
         }
     }
     async findById(req, res) {
         try {
-            const { id } = req.params;
-            const order = await services_1.orderService.findById(id); // Service inclui itens, produtos e cliente
+            const order = await this.orderService.findById(req.params.id);
             if (!order) {
-                return res.status(404).json({ message: 'Pedido não encontrado' });
+                return res.status(404).json({ message: 'Pedido não encontrado.' });
             }
-            return res.status(200).json(order); // Retorna o pedido com suas relações
+            return res.status(200).json(order);
         }
         catch (error) {
-            console.error('Erro no OrderController.findById:', error);
-            return res.status(500).json({ message: 'Erro interno ao buscar pedido' });
-        }
-    }
-    async findByClientId(req, res) {
-        try {
-            const { clientId } = req.params;
-            const orders = await services_1.orderService.findByClientId(clientId); // Service busca por cliente
-            return res.status(200).json(orders); // Retorna array de pedidos do cliente
-        }
-        catch (error) {
-            console.error('Erro no OrderController.findByClientId:', error);
-            return res.status(500).json({ message: 'Erro interno ao buscar pedidos por cliente' });
+            console.error('Erro ao buscar pedido:', error);
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
         }
     }
     async findAll(req, res) {
         try {
-            const orders = await services_1.orderService.findAll(); // Service pode incluir cliente
+            const orders = await this.orderService.findAll();
             return res.status(200).json(orders);
         }
         catch (error) {
-            console.error('Erro no OrderController.findAll:', error);
-            return res.status(500).json({ message: 'Erro interno ao listar pedidos' });
+            console.error('Erro ao listar pedidos:', error);
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
         }
     }
-    // Exemplo: Endpoint para atualizar apenas o status do pedido
-    async updateStatus(req, res) {
+    async update(req, res) {
         try {
-            const { id } = req.params;
-            const updateData = req.body; // Espera { status: 'Novo Status' }
-            const orderDto = (0, class_transformer_1.plainToInstance)(UpdateOrderDTO_1.UpdateOrderDTO, updateData);
-            const errors = await (0, class_validator_1.validate)(orderDto);
-            if (errors.length > 0) {
-                // Validar que apenas o campo 'status' está presente, se for o caso
-                // ou apenas validar o próprio DTO UpdateOrderDTO que já tem @IsOptional
-                return res.status(400).json({ message: 'Dados de atualização inválidos', errors });
+            const updated = await this.orderService.update(req.params.id, req.body);
+            if (!updated) {
+                return res.status(404).json({ message: 'Pedido não encontrado para atualização.' });
             }
-            const updatedOrder = await services_1.orderService.updateStatus(id, updateData);
-            if (!updatedOrder) {
-                return res.status(404).json({ message: 'Pedido não encontrado' });
-            }
-            return res.status(200).json(updatedOrder);
+            return res.status(200).json(updated);
         }
         catch (error) {
-            console.error('Erro no OrderController.updateStatus:', error);
-            if (error.message.includes('inválidos') || error.message.includes('status')) { // Validar status ou outros campos
-                return res.status(400).json({ message: error.message });
-            }
-            return res.status(500).json({ message: 'Erro interno ao atualizar status do pedido' });
+            console.error('Erro ao atualizar pedido:', error);
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
         }
     }
-    // A exclusão de pedidos geralmente é restrita ou não permitida.
-    // Se permitida (ex: apenas status Pendente), o controller chamaria o service.delete
     async delete(req, res) {
         try {
-            const { id } = req.params;
-            const deleted = await services_1.orderService.delete(id); // Service lida com regras de exclusão
-            if (!deleted) {
-                // Verificar se existe para retornar 404 ou 409
-                const order = await services_1.orderService.findById(id);
-                if (!order) {
-                    return res.status(404).json({ message: 'Pedido não encontrado' });
-                }
-                else {
-                    // Se existe mas não deletou, o service deve ter lançado um erro com a razão
-                    return res.status(409).json({ message: 'Não foi possível deletar o pedido' });
-                }
+            const success = await this.orderService.delete(req.params.id);
+            if (!success) {
+                return res.status(404).json({ message: 'Pedido não encontrado para exclusão.' });
             }
-            return res.status(204).send(); // 204 No Content
+            return res.status(204).send();
         }
         catch (error) {
-            console.error('Erro no OrderController.delete:', error);
-            if (error.message.includes('Não é possível excluir um pedido com status')) { // Exemplo de erro do service
-                return res.status(409).json({ message: error.message });
-            }
-            return res.status(500).json({ message: 'Erro interno ao deletar pedido' });
+            console.error('Erro ao deletar pedido:', error);
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
         }
     }
 }

@@ -1,13 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-// src/routes/order.routes.ts
-const express_1 = require("express"); // Importar NextFunction
+const express_1 = require("express");
 const OrderController_1 = require("../controllers/OrderController");
 const router = (0, express_1.Router)();
 const orderController = new OrderController_1.OrderController();
-// Handler de teste simples
-router.get('/test', (req, res, next) => {
-    res.send('Test Route OK');
+router.get('/test', (req, res) => {
+    res.send('Rota de pedidos OK');
 });
 router.post('/', async (req, res, next) => {
     try {
@@ -35,7 +33,7 @@ router.get('/:id', async (req, res, next) => {
 });
 router.put('/:id', async (req, res, next) => {
     try {
-        await orderController.updateStatus(req, res);
+        await orderController.update(req, res);
     }
     catch (error) {
         next(error);

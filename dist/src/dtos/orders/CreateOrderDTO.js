@@ -10,10 +10,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateOrderDTO = void 0;
-// src/dtos/orders/CreateOrderDTO.ts
 const class_validator_1 = require("class-validator");
-const class_transformer_1 = require("class-transformer"); // Necessário para @Type
-const CreateOrderItemDTO_1 = require("./CreateOrderItemDTO");
+const class_transformer_1 = require("class-transformer");
+class OrderItemDTO {
+}
+__decorate([
+    (0, class_validator_1.IsUUID)(),
+    __metadata("design:type", String)
+], OrderItemDTO.prototype, "productId", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(1),
+    __metadata("design:type", Number)
+], OrderItemDTO.prototype, "quantity", void 0);
 class CreateOrderDTO {
 }
 exports.CreateOrderDTO = CreateOrderDTO;
@@ -22,10 +31,13 @@ __decorate([
     __metadata("design:type", String)
 ], CreateOrderDTO.prototype, "clientId", void 0);
 __decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateOrderDTO.prototype, "status", void 0);
+__decorate([
     (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.ValidateNested)({ each: true }) // Valida cada item no array
-    ,
-    (0, class_transformer_1.Type)(() => CreateOrderItemDTO_1.CreateOrderItemDTO) // Transforma os objetos do array em instâncias de CreateOrderItemDTO
-    ,
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => OrderItemDTO),
     __metadata("design:type", Array)
 ], CreateOrderDTO.prototype, "items", void 0);

@@ -12,32 +12,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateUserDTO = void 0;
 // src/dtos/users/UpdateUserDTO.ts
 const class_validator_1 = require("class-validator");
+// Usamos IsOptional para permitir atualizações parciais
 class UpdateUserDTO {
 }
 exports.UpdateUserDTO = UpdateUserDTO;
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Length)(3, 100),
-    (0, class_validator_1.IsOptional)() // Todos opcionais para atualização
-    ,
+    (0, class_validator_1.IsNotEmpty)({ message: 'Name cannot be empty' }),
     __metadata("design:type", String)
 ], UpdateUserDTO.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsEmail)(),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEmail)({}, { message: 'Invalid email format' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Email cannot be empty' }),
     __metadata("design:type", String)
 ], UpdateUserDTO.prototype, "email", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Length)(6, 50),
-    (0, class_validator_1.IsOptional)() // Senha opcional na atualização
-    ,
+    (0, class_validator_1.MinLength)(8, { message: 'Password must be at least 8 characters long' }),
     __metadata("design:type", String)
 ], UpdateUserDTO.prototype, "password", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsIn)(['user', 'admin', 'manager']) // Definir papéis permitidos
-    ,
-    __metadata("design:type", String)
-], UpdateUserDTO.prototype, "role", void 0);

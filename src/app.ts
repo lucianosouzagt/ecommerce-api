@@ -1,13 +1,12 @@
 // src/app.ts (Exemplo de adição do Global Error Handler)
-import express, { Request, Response, NextFunction } from 'express'; // Importar NextFunction
+import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 
-import productRoutes from './routes/produto.routes';
+import userRoutes from './routes/user.routes'; 
 import clientRoutes from './routes/client.routes';
-// import userRoutes from './routes/user.routes'; // Crie esses arquivos depois
-// import orderRoutes from './routes/order.routes'; // Crie esses arquivos depois
-// import stockMovementRoutes from './routes/stockMovement.routes'; // Crie esses arquivos depois
-// ... outras importações
+import productRoutes from './routes/produto.routes';
+import orderRoutes from './routes/order.routes'; 
+import stockMovementRoutes from './routes/stockMovement.routes';
 
 const app = express();
 
@@ -16,8 +15,12 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 // Montar rotas
-app.use('/v1/product', productRoutes);
+app.use('/v1/user', userRoutes);
 app.use('/v1/client', clientRoutes);
+app.use('/v1/product', productRoutes);
+app.use('/v1/order', orderRoutes);
+app.use('/v1/stock', stockMovementRoutes);
+
 // ...
 app.get('/', (req, res) => {
     res.send('API de Produtos rodando!');

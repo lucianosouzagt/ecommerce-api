@@ -2,19 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.clientService = exports.ClientService = void 0;
 // src/services/ClientService.ts
+const database_1 = require("../database");
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
 const Client_1 = require("../database/entities/Client");
-const database_1 = require("../database"); // Assumindo que seu data-source está aqui
-// DTOs (Data Transfer Objects) para entrada de dados
-// Crie esses arquivos em, por exemplo, src/dtos/clients/
 const CreateClientsDTO_1 = require("../dtos/clients/CreateClientsDTO");
-// src/services/ClientService.ts (Versão Corrigida)
 class ClientService {
-    // Agora, o construtor pode receber um repositório como argumento
-    // Isso é útil para injeção de dependência em testes
+    // O repositório é injetado no construtor
     constructor(clientRepository) {
-        // Se um repositório for fornecido, use-o; caso contrário, obtenha-o do AppDataSource
         this.clientRepository = clientRepository || database_1.AppDataSource.getRepository(Client_1.Client);
     }
     async create(clientData) {
@@ -28,11 +23,11 @@ class ClientService {
         if (existingClient) {
             throw new Error('Já existe um cliente com este email.');
         }
-        const client = this.clientRepository.create(clientData); // Entidade criada, sem datas
-        const savedClient = await this.clientRepository.save(client); // Entidade salva, AGORA COM DATAS
-        return savedClient; // <--- RETORNE A ENTIDADE ATUALIZADA APÓS O SAVE!
+        const client = this.clientRepository.create(clientData);
+        const savedClient = await this.clientRepository.save(client); // Retorne o resultado do save para incluir createdAt/updatedAt
+        return savedClient;
     }
-    // ... (Mantenha os outros métodos)
+    // ... (Mantenha e ajuste os outros métodos para usar 'this.clientRepository')
     async findById(id) {
         return this.clientRepository.findOneBy({ id });
     }
@@ -45,11 +40,12 @@ class ClientService {
             return null;
         }
         this.clientRepository.merge(client, clientData);
-        const updatedClient = await this.clientRepository.save(client); // Retorne o resultado do save
+        const updatedClient = await this.clientRepository.save(client);
         return updatedClient;
     }
     async delete(id) {
         const result = await this.clientRepository.delete(id);
+        //return result.affected > 0;
         return !!result.affected && result.affected > 0;
     }
 }

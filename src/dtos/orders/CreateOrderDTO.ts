@@ -1,17 +1,25 @@
-// src/dtos/orders/CreateOrderDTO.ts
-import { IsUUID, IsArray, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer'; // Necessário para @Type
-import { CreateOrderItemDTO } from './CreateOrderItemDTO';
+import { IsUUID, IsNumber, IsString, IsNotEmpty, IsArray, ValidateNested, Min } from 'class-validator';
+import { Type } from 'class-transformer';
+
+class OrderItemDTO {
+    @IsUUID()
+    productId!: string;
+
+    @IsNumber()
+    @Min(1)
+    quantity!: number;
+}
 
 export class CreateOrderDTO {
     @IsUUID()
     clientId!: string;
 
-    @IsArray()
-    @ValidateNested({ each: true }) // Valida cada item no array
-    @Type(() => CreateOrderItemDTO) // Transforma os objetos do array em instâncias de CreateOrderItemDTO
-    items!: CreateOrderItemDTO[];
+    @IsString()
+    @IsNotEmpty()
+    status!: string;
 
-    // Nota: totalAmount e status são calculados/definidos no serviço,
-    // não devem vir no DTO de criação.
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => OrderItemDTO)
+    items!: OrderItemDTO[];
 }

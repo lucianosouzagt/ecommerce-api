@@ -1,20 +1,17 @@
 // src/dtos/users/CreateUserDTO.ts
-import { IsString, IsEmail, Length, IsOptional, IsIn } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class CreateUserDTO {
-    @IsString()
-    @Length(3, 100)
-    name!: string;
+  @IsString()
+  @IsNotEmpty({ message: 'Name is required' })
+  name!: string;
 
-    @IsEmail()
-    email!: string;
+  @IsEmail({}, { message: 'Invalid email format' })
+  @IsNotEmpty({ message: 'Email is required' })
+  email!: string;
 
-    @IsString()
-    @Length(6, 50) // Definir um tamanho mínimo e máximo para a senha
-    password!: string;
-
-    @IsString()
-    @IsOptional()
-    @IsIn(['user', 'admin', 'manager']) // Definir papéis permitidos
-    role?: string;
+  @IsString()
+  @IsNotEmpty({ message: 'Password is required' })
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  password!: string; // A senha será hashed no serviço
 }

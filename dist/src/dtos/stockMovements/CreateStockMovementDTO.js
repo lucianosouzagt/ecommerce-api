@@ -10,7 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateStockMovementDTO = void 0;
-// src/dtos/stockMovements/CreateStockMovementDTO.ts
 const class_validator_1 = require("class-validator");
 class CreateStockMovementDTO {
 }
@@ -20,26 +19,15 @@ __decorate([
     __metadata("design:type", String)
 ], CreateStockMovementDTO.prototype, "productId", void 0);
 __decorate([
-    (0, class_validator_1.IsInt)() // Quantidade pode ser positiva (entrada) ou negativa (saída)
-    ,
-    (0, class_validator_1.IsNumber)() // Usar IsNumber pois quantidade pode ser 0 ou negativa
-    ,
+    (0, class_validator_1.IsInt)(),
     __metadata("design:type", Number)
 ], CreateStockMovementDTO.prototype, "quantity", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsIn)(['Entrada', 'Saída (Pedido)', 'Saída (Perda)', 'Entrada (Ajuste)', 'Saída (Ajuste)']) // Tipos de movimento permitidos
-    ,
+    (0, class_validator_1.IsIn)(['entrada', 'saida', 'ajuste']),
     __metadata("design:type", String)
-], CreateStockMovementDTO.prototype, "movementType", void 0);
+], CreateStockMovementDTO.prototype, "type", void 0);
 __decorate([
-    (0, class_validator_1.IsUUID)(),
-    (0, class_validator_1.IsOptional)() // Opcional, se o movimento está ligado a um OrderItem
-    ,
-    __metadata("design:type", String)
-], CreateStockMovementDTO.prototype, "orderItemId", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateStockMovementDTO.prototype, "reference", void 0);
+], CreateStockMovementDTO.prototype, "description", void 0);

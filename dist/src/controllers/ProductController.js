@@ -2,97 +2,70 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductController = void 0;
 const services_1 = require("../services");
-const CreateProductDTO_1 = require("../dtos/products/CreateProductDTO");
-const UpdateProductDTO_1 = require("../dtos/products/UpdateProductDTO");
-const class_validator_1 = require("class-validator");
-const class_transformer_1 = require("class-transformer");
 class ProductController {
+    constructor(productService) {
+        this.productService = productService || new services_1.ProductService();
+    }
     async create(req, res) {
         try {
-            const productData = req.body;
-            const productDto = (0, class_transformer_1.plainToInstance)(CreateProductDTO_1.CreateProductDTO, productData);
-            const errors = await (0, class_validator_1.validate)(productDto);
-            if (errors.length > 0) {
-                return res.status(400).json({ message: 'Dados de entrada inválidos', errors });
-            }
-            const product = await services_1.productService.create(productData);
+            const product = await this.productService.create(req.body);
             return res.status(201).json(product);
         }
         catch (error) {
-            console.error('Erro no ProductController.create:', error);
-            if (error.message.includes('Já existe')) {
-                return res.status(409).json({ message: error.message }); // 409 Conflict
+            if (error.message.includes('inválido')) {
+                return res.status(400).json({ message: error.message });
             }
-            if (error.message.includes('inválidos')) {
-                return res.status(400).json({ message: error.message }); // 400 Bad Request
-            }
-            return res.status(500).json({ message: 'Erro interno ao criar produto' });
+            console.error('Erro ao criar produto:', error);
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
         }
     }
     async findById(req, res) {
         try {
-            const { id } = req.params;
-            const product = await services_1.productService.findById(id);
+            const product = await this.productService.findById(req.params.id);
             if (!product) {
-                return res.status(404).json({ message: 'Produto não encontrado' });
+                return res.status(404).json({ message: 'Produto não encontrado.' });
             }
             return res.status(200).json(product);
         }
         catch (error) {
-            console.error('Erro no ProductController.findById:', error);
-            return res.status(500).json({ message: 'Erro interno ao buscar produto' });
+            console.error('Erro ao buscar produto:', error);
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
         }
     }
     async findAll(req, res) {
         try {
-            const products = await services_1.productService.findAll();
+            const products = await this.productService.findAll();
             return res.status(200).json(products);
         }
         catch (error) {
-            console.error('Erro no ProductController.findAll:', error);
-            return res.status(500).json({ message: 'Erro interno ao listar produtos' });
+            console.error('Erro ao listar produtos:', error);
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
         }
     }
     async update(req, res) {
         try {
-            const { id } = req.params;
-            const updateData = req.body;
-            const productDto = (0, class_transformer_1.plainToInstance)(UpdateProductDTO_1.UpdateProductDTO, updateData);
-            const errors = await (0, class_validator_1.validate)(productDto);
-            if (errors.length > 0) {
-                return res.status(400).json({ message: 'Dados de atualização inválidos', errors });
+            const updated = await this.productService.update(req.params.id, req.body);
+            if (!updated) {
+                return res.status(404).json({ message: 'Produto não encontrado para atualização.' });
             }
-            const updatedProduct = await services_1.productService.update(id, updateData);
-            if (!updatedProduct) {
-                return res.status(404).json({ message: 'Produto não encontrado' });
-            }
-            return res.status(200).json(updatedProduct);
+            return res.status(200).json(updated);
         }
         catch (error) {
-            console.error('Erro no ProductController.update:', error);
-            if (error.message.includes('inválidos')) {
-                return res.status(400).json({ message: error.message }); // 400 Bad Request
-            }
-            return res.status(500).json({ message: 'Erro interno ao atualizar produto' });
+            console.error('Erro ao atualizar produto:', error);
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
         }
     }
     async delete(req, res) {
         try {
-            const { id } = req.params;
-            // Lógica de negócio: Verificar se o produto pode ser excluído (ex: não ter estoque, não estar em pedidos ativos)
-            // Essa verificação deve estar no Service, o controller apenas chama.
-            const deleted = await services_1.productService.delete(id);
-            if (!deleted) {
-                return res.status(404).json({ message: 'Produto não encontrado ou não pode ser excluído' }); // Pode ser 404 ou 409 dependendo do motivo no service
+            const success = await this.productService.delete(req.params.id);
+            if (!success) {
+                return res.status(404).json({ message: 'Produto não encontrado para exclusão.' });
             }
             return res.status(204).send();
         }
         catch (error) {
-            console.error('Erro no ProductController.delete:', error);
-            if (error.message.includes('não pode ser excluído')) { // Exemplo de erro vindo do service
-                return res.status(409).json({ message: error.message });
-            }
-            return res.status(500).json({ message: 'Erro interno ao deletar produto' });
+            console.error('Erro ao deletar produto:', error);
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
         }
     }
 }

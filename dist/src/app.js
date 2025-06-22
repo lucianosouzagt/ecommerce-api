@@ -4,21 +4,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // src/app.ts (Exemplo de adição do Global Error Handler)
-const express_1 = __importDefault(require("express")); // Importar NextFunction
+const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
-const produto_routes_1 = __importDefault(require("./routes/produto.routes"));
+const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const client_routes_1 = __importDefault(require("./routes/client.routes"));
-// import userRoutes from './routes/user.routes'; // Crie esses arquivos depois
-// import orderRoutes from './routes/order.routes'; // Crie esses arquivos depois
-// import stockMovementRoutes from './routes/stockMovement.routes'; // Crie esses arquivos depois
-// ... outras importações
+const produto_routes_1 = __importDefault(require("./routes/produto.routes"));
+const order_routes_1 = __importDefault(require("./routes/order.routes"));
+const stockMovement_routes_1 = __importDefault(require("./routes/stockMovement.routes"));
 const app = (0, express_1.default)();
 // Middlewares globais (parsing JSON, etc.)
 app.use(express_1.default.json());
 app.use(body_parser_1.default.json());
 // Montar rotas
-app.use('/v1/produto', produto_routes_1.default);
+app.use('/v1/user', user_routes_1.default);
 app.use('/v1/client', client_routes_1.default);
+app.use('/v1/product', produto_routes_1.default);
+app.use('/v1/order', order_routes_1.default);
+app.use('/v1/stock', stockMovement_routes_1.default);
 // ...
 app.get('/', (req, res) => {
     res.send('API de Produtos rodando!');
