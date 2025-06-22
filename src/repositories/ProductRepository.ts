@@ -1,6 +1,7 @@
+// src/database/repositories/ProductRepository.ts
 import { Repository } from 'typeorm';
-import { AppDataSource } from '../database';
-import { Product } from '../database/entities/Product';
+import { AppDataSource } from '../database/index.js';
+import { Product } from '../database/entities/Product.js';
 
 export class ProductRepository {
     private repo: Repository<Product>;

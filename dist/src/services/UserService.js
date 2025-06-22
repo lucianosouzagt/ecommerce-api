@@ -1,18 +1,16 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.userService = exports.UserService = void 0;
-const database_1 = require("../database");
-const class_validator_1 = require("class-validator");
-const class_transformer_1 = require("class-transformer");
-const User_1 = require("../database/entities/User");
-const CreateUserDTO_1 = require("../dtos/users/CreateUserDTO");
-class UserService {
+import { AppDataSource } from '../database/index.js';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
+import { User } from '../database/entities/User.js';
+import { CreateUserDTO } from '../dtos/users/CreateUserDTO.js';
+export class UserService {
+    userRepository;
     constructor(userRepository) {
-        this.userRepository = userRepository || database_1.AppDataSource.getRepository(User_1.User);
+        this.userRepository = userRepository || AppDataSource.getRepository(User);
     }
     async create(userData) {
-        const userDto = (0, class_transformer_1.plainToInstance)(CreateUserDTO_1.CreateUserDTO, userData);
-        const errors = await (0, class_validator_1.validate)(userDto);
+        const userDto = plainToInstance(CreateUserDTO, userData);
+        const errors = await validate(userDto);
         if (errors.length > 0) {
             const errorMessages = errors.map(err => Object.values(err.constraints || {})).flat();
             throw new Error(`Dados do usuário inválidos: ${errorMessages.join(', ')}`);
@@ -42,6 +40,5 @@ class UserService {
         return !!result.affected && result.affected > 0;
     }
 }
-exports.UserService = UserService;
 // Instância padrão exportada
-exports.userService = new UserService();
+export const userService = new UserService();

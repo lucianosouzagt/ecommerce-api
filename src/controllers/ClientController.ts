@@ -1,7 +1,7 @@
 // src/controllers/ClientController.ts
 import { Request, Response } from 'express';
 // Importe a CLASSE do serviço
-import { ClientService } from '../services'; 
+import { ClientService } from '../services/ClientService.js'; 
 
 export class ClientController {
     private clientService: ClientService;
@@ -29,6 +29,23 @@ export class ClientController {
         try {
             const { id } = req.params;
             const client = await this.clientService.findById(id);
+            if (!client) {
+                return res.status(404).json({ message: 'Cliente não encontrado.' });
+            }
+            return res.status(200).json(client);
+        } catch (error: any) {
+            console.error('Erro ao buscar cliente por ID:', error);
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
+        }
+    }
+
+    async findByEmail(req: Request, res: Response): Promise<Response> {
+        try {
+            const { email } = req.body;
+            if (!email) {
+                return res.status(400).json({ message: 'Email é obrigatório no corpo da requisição.' });
+            }
+            const client = await this.clientService.findByEmail(email);
             if (!client) {
                 return res.status(404).json({ message: 'Cliente não encontrado.' });
             }

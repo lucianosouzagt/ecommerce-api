@@ -1,9 +1,9 @@
-import { AppDataSource } from '../database';
+import { AppDataSource } from '../database/index.js';
 import { Repository } from 'typeorm';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { User } from '../database/entities/User';
-import { CreateUserDTO } from '../dtos/users/CreateUserDTO';
+import { User } from '../database/entities/User.js';
+import { CreateUserDTO } from '../dtos/users/CreateUserDTO.js';
 
 export class UserService {
     private userRepository: Repository<User>;

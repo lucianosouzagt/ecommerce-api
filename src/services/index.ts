@@ -1,9 +1,9 @@
 // src/services/index.ts
-export { ClientService } from './ClientService';
-export { ProductService } from './ProductService';
-export { OrderService } from './OrderService';
-export { StockMovementService } from './StockMovementService';
-export { UserService } from './UserService';
+export { ClientService } from './ClientService.js';
+export { ProductService } from './ProductService.js';
+export { OrderService } from './OrderService.js';
+export { StockMovementService } from './StockMovementService.js';
+export { UserService } from './UserService.js';
 
 //export * from './ClientService';
 //export * from './OrderService';

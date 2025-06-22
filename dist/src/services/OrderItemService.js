@@ -1,20 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.orderItemService = exports.OrderItemService = void 0;
 // src/services/OrderItemService.ts
-const OrderItem_1 = require("../database/entities/OrderItem");
-const database_1 = require("../database");
-// DTOs (se necessário para operações diretas, menos comum)
-// import { CreateOrderItemDTO } from '../dtos/orderItems/CreateOrderItemDTO';
-// import { UpdateOrderItemDTO } from '../dtos/orderItems/UpdateOrderItemDTO';
-const orderItemRepository = database_1.AppDataSource.getRepository(OrderItem_1.OrderItem);
-class OrderItemService {
-    // Métodos CRUD básicos - **Nota:** A lógica de negócio de e-commerce
-    // frequentemente impede ou restringe a manipulação direta de OrderItems
-    // fora do contexto de um Order.
-    // async create(itemData: CreateOrderItemDTO): Promise<OrderItem> { /* ... */ }
-    // async update(id: string, updateData: UpdateOrderItemDTO): Promise<OrderItem | null> { /* ... */ }
-    // async delete(id: string): Promise<boolean> { /* ... */ }
+import { OrderItem } from '../database/entities/OrderItem.js';
+import { AppDataSource } from '../database/index.js';
+const orderItemRepository = AppDataSource.getRepository(OrderItem);
+export class OrderItemService {
     /**
      * Busca um item de pedido pelo ID.
      * @param id ID do item de pedido (UUID).
@@ -45,6 +33,5 @@ class OrderItemService {
         });
     }
 }
-exports.OrderItemService = OrderItemService;
 // Exportar uma instância padrão
-exports.orderItemService = new OrderItemService();
+export const orderItemService = new OrderItemService();

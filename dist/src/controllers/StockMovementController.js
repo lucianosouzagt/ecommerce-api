@@ -1,10 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.StockMovementController = void 0;
-const services_1 = require("../services");
-class StockMovementController {
+import { StockMovementService } from '../services/StockMovementService.js';
+export class StockMovementController {
+    stockMovementService;
     constructor(stockMovementService) {
-        this.stockMovementService = stockMovementService || new services_1.StockMovementService();
+        this.stockMovementService = stockMovementService || new StockMovementService();
     }
     async create(req, res) {
         try {
@@ -37,4 +35,3 @@ class StockMovementController {
         }
     }
 }
-exports.StockMovementController = StockMovementController;

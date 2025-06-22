@@ -1,22 +1,10 @@
 // src/services/OrderItemService.ts
-import { OrderItem } from '../database/entities/OrderItem';
-import { AppDataSource } from '../database';
-
-// DTOs (se necessário para operações diretas, menos comum)
-// import { CreateOrderItemDTO } from '../dtos/orderItems/CreateOrderItemDTO';
-// import { UpdateOrderItemDTO } from '../dtos/orderItems/UpdateOrderItemDTO';
+import { OrderItem } from '../database/entities/OrderItem.js';
+import { AppDataSource } from '../database/index.js';
 
 const orderItemRepository = AppDataSource.getRepository(OrderItem);
 
 export class OrderItemService {
-
-    // Métodos CRUD básicos - **Nota:** A lógica de negócio de e-commerce
-    // frequentemente impede ou restringe a manipulação direta de OrderItems
-    // fora do contexto de um Order.
-
-    // async create(itemData: CreateOrderItemDTO): Promise<OrderItem> { /* ... */ }
-    // async update(id: string, updateData: UpdateOrderItemDTO): Promise<OrderItem | null> { /* ... */ }
-    // async delete(id: string): Promise<boolean> { /* ... */ }
 
     /**
      * Busca um item de pedido pelo ID.

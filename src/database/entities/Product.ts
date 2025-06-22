@@ -17,9 +17,13 @@ export class Product {
     @Column('int')
     stock!: number;
 
-    @CreateDateColumn()
-    createdAt!: Date;
+    @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    created_at!: Date;
 
-    @UpdateDateColumn()
-    updatedAt!: Date;
+    @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updated_at!: Date;
 }

@@ -1,7 +1,8 @@
 // src/database/repositories/UserRepository.ts
 import { Repository } from 'typeorm';
-import { User } from '../database/entities/User'; // Ajuste o caminho conforme sua estrutura
-import { AppDataSource } from '../database'; // Ajuste o caminho conforme sua estrutura
+import { AppDataSource } from '../database/index.js';
+import { User } from '../database/entities/User.js';
+
 
 // Definir a interface para os métodos customizados
 interface ProductRepositoryCustom extends Repository<User> {

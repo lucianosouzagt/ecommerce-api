@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { Client } from './Client';
-import { OrderItem } from './OrderItem';
+import { Client } from './Client.js';
+import { OrderItem } from './OrderItem.js';
 
 @Entity('orders')
 export class Order {
@@ -17,12 +17,16 @@ export class Order {
     @Column()
     status!: string;
 
-    @OneToMany(() => OrderItem, item => item.order, { cascade: true, eager: true })
+    @OneToMany(() => OrderItem, item => item.order)
     items!: OrderItem[];
 
-    @CreateDateColumn()
-    createdAt!: Date;
+    @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+    created_at!: Date;
 
-    @UpdateDateColumn()
-    updatedAt!: Date;
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updated_at!: Date;
 }

@@ -1,6 +1,6 @@
 // src/routes/client.routes.ts
 import { Router, Request, Response, NextFunction } from 'express'; // Importar NextFunction
-import { ClientController } from '../controllers/ClientController';
+import { ClientController } from '../controllers/ClientController.js';
 
 const router = Router();
 const clientController = new ClientController();
@@ -18,6 +18,14 @@ router.post('/', async (req, res, next) => {
   }
 });
 
+router.get('/email', async (req, res, next) => {
+  try {
+      await clientController.findByEmail(req, res)
+  } catch(error) {
+      next(error);
+  }
+});
+
 router.get('/', async (req, res, next) => {
   try {
       await clientController.findAll(req, res)
@@ -25,6 +33,7 @@ router.get('/', async (req, res, next) => {
       next(error);
   }
 });
+
 router.get('/:id', async (req, res, next) => {
   try {
       await clientController.findById(req, res)
@@ -32,6 +41,7 @@ router.get('/:id', async (req, res, next) => {
       next(error);
   }
 });
+
 router.put('/:id',async (req, res, next) => {
   try {
       await clientController.update(req, res)
@@ -39,6 +49,7 @@ router.put('/:id',async (req, res, next) => {
     next(error);
   }
 });
+
 router.delete('/:id', async (req, res, next) => {
   try {
       await clientController.delete(req, res)

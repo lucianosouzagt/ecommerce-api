@@ -1,10 +1,10 @@
-import { AppDataSource } from '../database';
+import { AppDataSource } from '../database/index.js';
 import { Repository } from 'typeorm';
-import { StockMovement } from '../database/entities/StockMovement';
-import { CreateStockMovementDTO } from '../dtos/stockMovements/CreateStockMovementDTO';
+import { StockMovement } from '../database/entities/StockMovement.js';
+import { CreateStockMovementDTO } from '../dtos/stockMovements/CreateStockMovementDTO.js';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { Product } from '../database/entities/Product';
+import { Product } from '../database/entities/Product.js';
 
 export class StockMovementService {
     private stockMovementRepository: Repository<StockMovement>;
@@ -39,14 +39,14 @@ export class StockMovementService {
 
     async findAll(): Promise<StockMovement[]> {
         return this.stockMovementRepository.find({
-            order: { createdAt: 'DESC' },
+            order: { created_at: 'DESC' },
         });
     }
 
     async findByProduct(productId: string): Promise<StockMovement[]> {
         return this.stockMovementRepository.find({
             where: { product: { id: productId } },
-            order: { createdAt: 'DESC' },
+            order: { created_at: 'DESC' },
         });
     }
 }

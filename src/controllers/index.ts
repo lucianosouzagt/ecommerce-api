@@ -1,6 +1,6 @@
 // src/controllers/index.ts
-export * from './ClientController';
-export * from './OrderController';
-export * from './ProductController';
-export * from './StockMovementController';
-export * from './UserController';
+export * from './ClientController.js';
+export * from './OrderController.js';
+export * from './ProductController.js';
+export * from './StockMovementController.js';
+export * from './UserController.js';

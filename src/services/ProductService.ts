@@ -1,7 +1,7 @@
-import { AppDataSource } from '../database';
+import { AppDataSource } from '../database/index.js';
 import { Repository } from 'typeorm';
-import { Product } from '../database/entities/Product';
-import { CreateProductDTO } from '../dtos/products/CreateProductDTO';
+import { Product } from '../database/entities/Product.js';
+import { CreateProductDTO } from '../dtos/products/CreateProductDTO.js';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 

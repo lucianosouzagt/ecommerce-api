@@ -1,27 +1,40 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.orderService = exports.OrderService = void 0;
-const database_1 = require("../database");
-const Order_1 = require("../database/entities/Order");
-const CreateOrderDTO_1 = require("../dtos/orders/CreateOrderDTO");
-const class_validator_1 = require("class-validator");
-const class_transformer_1 = require("class-transformer");
-const Client_1 = require("../database/entities/Client");
-const Product_1 = require("../database/entities/Product");
-const OrderItem_1 = require("../database/entities/OrderItem");
-class OrderService {
+import { AppDataSource } from '../database/index.js';
+import { Order } from '../database/entities/Order.js';
+import { CreateOrderDTO } from '../dtos/orders/CreateOrderDTO.js';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
+import { Client } from '../database/entities/Client.js';
+import { Product } from '../database/entities/Product.js';
+import { OrderItem } from '../database/entities/OrderItem.js';
+// Função auxiliar para extrair todas as mensagens de erro de validação, incluindo as aninhadas
+function getValidationMessages(errors) {
+    let messages = [];
+    errors.forEach(err => {
+        if (err.constraints) {
+            messages = messages.concat(Object.values(err.constraints));
+        }
+        if (err.children && err.children.length > 0) {
+            // Recursivamente busca por erros em objetos aninhados
+            messages = messages.concat(getValidationMessages(err.children));
+        }
+    });
+    return messages;
+}
+export class OrderService {
+    orderRepository;
+    productRepository;
     constructor(orderRepository) {
-        this.orderRepository = orderRepository || database_1.AppDataSource.getRepository(Order_1.Order);
-        this.productRepository = database_1.AppDataSource.getRepository(Product_1.Product);
+        this.orderRepository = orderRepository || AppDataSource.getRepository(Order);
+        this.productRepository = AppDataSource.getRepository(Product);
     }
     async create(orderData) {
-        const dto = (0, class_transformer_1.plainToInstance)(CreateOrderDTO_1.CreateOrderDTO, orderData);
-        const errors = await (0, class_validator_1.validate)(dto);
+        const dto = plainToInstance(CreateOrderDTO, orderData);
+        const errors = await validate(dto);
         if (errors.length > 0) {
-            const messages = errors.map(err => Object.values(err.constraints || {})).flat();
+            const messages = getValidationMessages(errors); // Usa a função auxiliar
             throw new Error(`Dados do pedido inválidos: ${messages.join(', ')}`);
         }
-        const clientRepo = database_1.AppDataSource.getRepository(Client_1.Client);
+        const clientRepo = AppDataSource.getRepository(Client);
         const client = await clientRepo.findOneBy({ id: orderData.clientId });
         if (!client)
             throw new Error('Cliente não encontrado.');
@@ -39,7 +52,7 @@ class OrderService {
             // Atualiza estoque
             product.stock -= itemData.quantity;
             await this.productRepository.save(product);
-            const orderItem = new OrderItem_1.OrderItem();
+            const orderItem = new OrderItem();
             orderItem.product = product;
             orderItem.quantity = itemData.quantity;
             orderItem.unitPrice = unitPrice;
@@ -65,7 +78,6 @@ class OrderService {
         const order = await this.orderRepository.findOneBy({ id });
         if (!order)
             return null;
-        // Neste exemplo não atualizamos itens nem cliente — só status
         this.orderRepository.merge(order, {
             status: data.status ?? order.status,
         });
@@ -76,5 +88,5 @@ class OrderService {
         return !!result.affected && result.affected > 0;
     }
 }
-exports.OrderService = OrderService;
-exports.orderService = new OrderService();
+export const orderService = new OrderService();
+2;

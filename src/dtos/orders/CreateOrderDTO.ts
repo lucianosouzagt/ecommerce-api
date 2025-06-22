@@ -1,5 +1,11 @@
-import { IsUUID, IsNumber, IsString, IsNotEmpty, IsArray, ValidateNested, Min } from 'class-validator';
+import { IsUUID, IsNumber, IsEnum, IsNotEmpty, ArrayMinSize, ValidateNested, Min } from 'class-validator';
 import { Type } from 'class-transformer';
+
+export enum OrderStatus {
+    PENDING = 'pending',
+    COMPLETED = 'completed',
+    CANCELED = 'canceled',
+}
 
 class OrderItemDTO {
     @IsUUID()
@@ -11,15 +17,16 @@ class OrderItemDTO {
 }
 
 export class CreateOrderDTO {
-    @IsUUID()
+    @IsUUID('4', { message: 'O ID do cliente deve ser um UUID válido.' })
+    @IsNotEmpty({ message: 'O ID do cliente não pode ser vazio.' })
     clientId!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    status!: string;
+    @IsEnum(OrderStatus, { message: 'O status do pedido deve ser um dos valores permitidos.' })
+    @IsNotEmpty({ message: 'O status do pedido não pode ser vazio.' })
+    status!: OrderStatus;
 
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => OrderItemDTO)
+    @ArrayMinSize(1, { message: 'O pedido deve conter pelo menos um item.' })
+    @ValidateNested({ each: true }) 
+    @Type(() => OrderItemDTO) 
     items!: OrderItemDTO[];
 }

@@ -1,20 +1,18 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.clientService = exports.ClientService = void 0;
 // src/services/ClientService.ts
-const database_1 = require("../database");
-const class_validator_1 = require("class-validator");
-const class_transformer_1 = require("class-transformer");
-const Client_1 = require("../database/entities/Client");
-const CreateClientsDTO_1 = require("../dtos/clients/CreateClientsDTO");
-class ClientService {
+import { AppDataSource } from '../database/index.js';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
+import { Client } from '../database/entities/Client.js';
+import { CreateClientDTO } from '../dtos/clients/CreateClientsDTO.js';
+export class ClientService {
+    clientRepository;
     // O repositório é injetado no construtor
     constructor(clientRepository) {
-        this.clientRepository = clientRepository || database_1.AppDataSource.getRepository(Client_1.Client);
+        this.clientRepository = clientRepository || AppDataSource.getRepository(Client);
     }
     async create(clientData) {
-        const clientDto = (0, class_transformer_1.plainToInstance)(CreateClientsDTO_1.CreateClientDTO, clientData);
-        const errors = await (0, class_validator_1.validate)(clientDto);
+        const clientDto = plainToInstance(CreateClientDTO, clientData);
+        const errors = await validate(clientDto);
         if (errors.length > 0) {
             const errorMessages = errors.map(err => Object.values(err.constraints || {})).flat();
             throw new Error(`Dados do cliente inválidos: ${errorMessages.join(', ')}`);
@@ -24,10 +22,12 @@ class ClientService {
             throw new Error('Já existe um cliente com este email.');
         }
         const client = this.clientRepository.create(clientData);
-        const savedClient = await this.clientRepository.save(client); // Retorne o resultado do save para incluir createdAt/updatedAt
+        const savedClient = await this.clientRepository.save(client);
         return savedClient;
     }
-    // ... (Mantenha e ajuste os outros métodos para usar 'this.clientRepository')
+    async findByEmail(email) {
+        return this.clientRepository.findOneBy({ email });
+    }
     async findById(id) {
         return this.clientRepository.findOneBy({ id });
     }
@@ -49,6 +49,5 @@ class ClientService {
         return !!result.affected && result.affected > 0;
     }
 }
-exports.ClientService = ClientService;
 // Exportar uma instância padrão
-exports.clientService = new ClientService();
+export const clientService = new ClientService();

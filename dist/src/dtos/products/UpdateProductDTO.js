@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,28 +7,28 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateProductDTO = void 0;
 // src/dtos/products/UpdateProductDTO.ts
-const class_validator_1 = require("class-validator");
-class UpdateProductDTO {
+import { IsString, Length, IsNumber, IsOptional, Min } from 'class-validator';
+export class UpdateProductDTO {
+    name;
+    description;
+    price;
 }
-exports.UpdateProductDTO = UpdateProductDTO;
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Length)(3, 255),
-    (0, class_validator_1.IsOptional)(),
+    IsString(),
+    Length(3, 255),
+    IsOptional(),
     __metadata("design:type", String)
 ], UpdateProductDTO.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
+    IsString(),
+    IsOptional(),
     __metadata("design:type", String)
 ], UpdateProductDTO.prototype, "description", void 0);
 __decorate([
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(0),
-    (0, class_validator_1.IsOptional)() // Preço opcional na atualização
+    IsNumber(),
+    Min(0),
+    IsOptional() // Preço opcional na atualização
     ,
     __metadata("design:type", Number)
 ], UpdateProductDTO.prototype, "price", void 0);

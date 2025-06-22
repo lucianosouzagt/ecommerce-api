@@ -2,11 +2,11 @@
 import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 
-import userRoutes from './routes/user.routes'; 
-import clientRoutes from './routes/client.routes';
-import productRoutes from './routes/produto.routes';
-import orderRoutes from './routes/order.routes'; 
-import stockMovementRoutes from './routes/stockMovement.routes';
+import userRoutes from './routes/user.routes.js'; 
+import clientRoutes from './routes/client.routes.js';
+import productRoutes from './routes/produto.routes.js';
+import orderRoutes from './routes/order.routes.js'; 
+import stockMovementRoutes from './routes/stockMovement.routes.js';
 
 const app = express();
 
