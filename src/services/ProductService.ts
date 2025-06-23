@@ -28,8 +28,16 @@ export class ProductService {
         return this.productRepository.findOneBy({ id });
     }
 
+    async findByName(name: string): Promise<Product | null> {
+        return this.productRepository.findOneBy({ name });
+    }
+
     async findAll(): Promise<Product[]> {
         return this.productRepository.find();
+    }
+
+    async count(): Promise<number | null> {
+        return this.productRepository.count();
     }
 
     async update(id: string, productData: Partial<CreateProductDTO>): Promise<Product | null> {

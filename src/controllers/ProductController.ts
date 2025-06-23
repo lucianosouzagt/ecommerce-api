@@ -34,9 +34,36 @@ export class ProductController {
         }
     }
 
+    async findByName(req: Request, res: Response): Promise<Response> {
+        try {
+            const { name } = req.body;
+            if (!name) {
+                return res.status(400).json({ message: 'Nome é obrigatório no corpo da requisição.' });
+            }
+            const product = await this.productService.findByName(name);
+            if (!product) {
+                return res.status(404).json({ message: 'Produto não encontrado.' });
+            }
+            return res.status(200).json(product);
+        } catch (error: any) {
+            console.error('Erro ao buscar produto:', error);
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
+        }
+    }
+
     async findAll(req: Request, res: Response): Promise<Response> {
         try {
             const products = await this.productService.findAll();
+            return res.status(200).json(products);
+        } catch (error: any) {
+            console.error('Erro ao listar produtos:', error);
+            return res.status(500).json({ message: 'Erro interno do servidor.' });
+        }
+    }
+
+    async count(req: Request, res: Response): Promise<Response> {
+        try {
+            const products = await this.productService.count();
             return res.status(200).json(products);
         } catch (error: any) {
             console.error('Erro ao listar produtos:', error);

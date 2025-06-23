@@ -10,12 +10,20 @@ export class ProductRepository {
         this.repo = AppDataSource.getRepository(Product);
     }
 
+    async findById(id: string): Promise<Product | null> {
+        return this.repo.findOneBy({ id });
+    }
+
+    async findByName(name: string): Promise<Product | null> {
+        return this.repo.findOneBy({ name });
+    }
+
     async findAll(): Promise<Product[]> {
         return this.repo.find();
     }
 
-    async findById(id: string): Promise<Product | null> {
-        return this.repo.findOneBy({ id });
+    async count(): Promise<number> {
+        return this.repo.count();
     }
 
     async createAndSave(productData: Partial<Product>): Promise<Product> {
