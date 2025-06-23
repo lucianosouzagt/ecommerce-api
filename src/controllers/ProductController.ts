@@ -64,9 +64,9 @@ export class ProductController {
     async count(req: Request, res: Response): Promise<Response> {
         try {
             const products = await this.productService.count();
-            return res.status(200).json(products);
+            return res.status(200).json({total: products});
         } catch (error: any) {
-            console.error('Erro ao listar produtos:', error);
+            console.error('Erro ao contar produtos:', error);
             return res.status(500).json({ message: 'Erro interno do servidor.' });
         }
     }

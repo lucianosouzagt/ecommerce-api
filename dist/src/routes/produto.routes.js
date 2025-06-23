@@ -21,6 +21,22 @@ router.get('/', async (req, res, next) => {
         next(error);
     }
 });
+router.get('/name', async (req, res, next) => {
+    try {
+        await productController.findByName(req, res);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+router.get('/count', async (req, res, next) => {
+    try {
+        await productController.count(req, res);
+    }
+    catch (error) {
+        next(error);
+    }
+});
 router.get('/:id', async (req, res, next) => {
     try {
         await productController.findById(req, res);

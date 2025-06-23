@@ -6,7 +6,6 @@ import { Client } from '../database/entities/Client.js';
 import { CreateClientDTO } from '../dtos/clients/CreateClientsDTO.js';
 export class ClientService {
     clientRepository;
-    // O repositório é injetado no construtor
     constructor(clientRepository) {
         this.clientRepository = clientRepository || AppDataSource.getRepository(Client);
     }
@@ -36,18 +35,15 @@ export class ClientService {
     }
     async update(id, clientData) {
         const client = await this.clientRepository.findOneBy({ id });
-        if (!client) {
+        if (!client)
             return null;
-        }
         this.clientRepository.merge(client, clientData);
         const updatedClient = await this.clientRepository.save(client);
         return updatedClient;
     }
     async delete(id) {
         const result = await this.clientRepository.delete(id);
-        //return result.affected > 0;
         return !!result.affected && result.affected > 0;
     }
 }
-// Exportar uma instância padrão
 export const clientService = new ClientService();

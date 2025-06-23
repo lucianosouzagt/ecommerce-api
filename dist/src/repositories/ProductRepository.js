@@ -1,29 +1,32 @@
 import { AppDataSource } from '../database/index.js';
 import { Product } from '../database/entities/Product.js';
-export class ProductRepository {
-    repo;
-    constructor() {
-        this.repo = AppDataSource.getRepository(Product);
-    }
-    async findAll() {
-        return this.repo.find();
-    }
+export const ProductRepository = AppDataSource.getRepository(Product).extend({
     async findById(id) {
-        return this.repo.findOneBy({ id });
-    }
+        return this.findOneBy({ id });
+    },
+    async findByName(name) {
+        return this.findOne({ where: { name: name } });
+    },
+    async findAll() {
+        return this.find();
+    },
+    async count() {
+        console.log("Contando todos os produtos (via repositório customizado)...");
+        return this.count();
+    },
     async createAndSave(productData) {
-        const product = this.repo.create(productData);
-        return this.repo.save(product);
-    }
-    async update(id, productData) {
-        const product = await this.repo.findOneBy({ id });
-        if (!product)
+        const product = this.create(productData);
+        return this.save(product);
+    },
+    async update(id, updateData) {
+        const productUpdate = await this.findOne({ where: { id: id } });
+        if (!productUpdate)
             return null;
-        this.repo.merge(product, productData);
-        return this.repo.save(product);
-    }
+        Object.assign(productUpdate, updateData);
+        return this.save(productUpdate);
+    },
     async delete(id) {
-        const result = await this.repo.delete(id);
-        return !!result.affected && result.affected > 0;
+        const deleteResult = await this.delete(id);
+        return !!deleteResult.affected && deleteResult.affected > 0;
     }
-}
+});

@@ -1,5 +1,5 @@
 // src/database/repositories/ClientRepository.ts
-import { Repository, DataSource, DeleteResult } from 'typeorm'; 
+import { DeleteResult } from 'typeorm'; 
 import { AppDataSource } from '../database/index.js'; 
 import { Client } from '../database/entities/Client.js'; 
 
@@ -71,19 +71,13 @@ export const ClientRepository = AppDataSource.getRepository(Client).extend({
 
     async update(id: string, updateData: Partial<Client>): Promise<Client | null> {
         const clientToUpdate = await this.findOne({ where: { id: id } });
-
-        if (!clientToUpdate) {
-            return null; 
-        }
-
+        if (!clientToUpdate) return null;
         Object.assign(clientToUpdate, updateData);
-
         return this.save(clientToUpdate);
     },
 
     async delete(id: string): Promise<boolean> {
         const deleteResult: DeleteResult = await this.delete(id); 
-
         return !!deleteResult.affected && deleteResult.affected > 0;
     }
 });

@@ -17,9 +17,8 @@ export const ClientRepository = AppDataSource.getRepository(Client).extend({
     },
     async update(id, updateData) {
         const clientToUpdate = await this.findOne({ where: { id: id } });
-        if (!clientToUpdate) {
+        if (!clientToUpdate)
             return null;
-        }
         Object.assign(clientToUpdate, updateData);
         return this.save(clientToUpdate);
     },

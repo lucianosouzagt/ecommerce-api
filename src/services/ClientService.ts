@@ -10,7 +10,6 @@ import { Repository } from 'typeorm';
 export class ClientService {
     private clientRepository: Repository<Client>;
 
-    // O repositório é injetado no construtor
     constructor(clientRepository?: Repository<Client>) {
         this.clientRepository = clientRepository || AppDataSource.getRepository(Client);
     }
@@ -47,9 +46,8 @@ export class ClientService {
 
     async update(id: string, clientData: Partial<CreateClientDTO>): Promise<Client | null> {
         const client = await this.clientRepository.findOneBy({ id });
-        if (!client) {
-            return null;
-        }
+        if (!client) return null;
+
         this.clientRepository.merge(client, clientData);
         const updatedClient = await this.clientRepository.save(client);
         return updatedClient;
@@ -57,9 +55,8 @@ export class ClientService {
 
     async delete(id: string): Promise<boolean> {
         const result = await this.clientRepository.delete(id);
-        //return result.affected > 0;
         return !!result.affected && result.affected > 0;
     }
 }
-// Exportar uma instância padrão
+
 export const clientService = new ClientService();
