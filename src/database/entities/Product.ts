@@ -24,6 +24,6 @@ export class Product {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',
-  })
-  updated_at!: Date;
+    })
+    updated_at!: Date;
 }

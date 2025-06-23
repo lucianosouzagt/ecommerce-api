@@ -12,7 +12,7 @@ import { IsString, IsEmail, IsOptional, Length } from 'class-validator';
 export class CreateClientDTO {
     name;
     email;
-    phone;
+    address;
 }
 __decorate([
     IsString(),
@@ -25,7 +25,6 @@ __decorate([
 ], CreateClientDTO.prototype, "email", void 0);
 __decorate([
     IsString(),
-    IsOptional() // Opcional para criação, pode ser obrigatório dependendo da regra
-    ,
-    __metadata("design:type", String)
-], CreateClientDTO.prototype, "phone", void 0);
+    IsOptional(),
+    __metadata("design:type", Object)
+], CreateClientDTO.prototype, "address", void 0);

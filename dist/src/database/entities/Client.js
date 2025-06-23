@@ -29,8 +29,8 @@ __decorate([
     __metadata("design:type", String)
 ], Client.prototype, "email", void 0);
 __decorate([
-    Column(),
-    __metadata("design:type", String)
+    Column({ type: 'varchar', nullable: true }),
+    __metadata("design:type", Object)
 ], Client.prototype, "address", void 0);
 __decorate([
     CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }),

@@ -11,8 +11,8 @@ export class Client {
     @Column({ unique: true })
     email!: string;
 
-    @Column()
-    address!: string|null;
+    @Column({ type: 'varchar', nullable: true })
+    address?: string|null;
 
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     created_at!: Date;
