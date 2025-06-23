@@ -61,8 +61,8 @@ export const ProductRepository = AppDataSource.getRepository(Product).extend({
         return this.findOneBy({ id });
     },
     
-    async findByName(name: string): Promise<Product | null> {
-        return this.findOne({ where: { name: name } });
+    async findByName(name: string): Promise<Product[] | null> {
+        return this.find({ where: { name: name } });
     },
 
     async findAll(): Promise<Product[]> {
